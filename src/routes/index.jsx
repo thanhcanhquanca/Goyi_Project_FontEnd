@@ -1,6 +1,6 @@
 import {Routes,Route} from "react-router";
-import ShowUser from "../layouts/index.jsx";
-import ShowUserHome from "../layouts/index.jsx";
+import ShowUser from "../layouts/user/index.jsx";
+import ShowUserHome from "../layouts/user/index.jsx";
 
 function RoutesIndex(){
     return(
