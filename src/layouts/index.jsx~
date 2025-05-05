@@ -81,7 +81,7 @@ function ShowUserHome() {
                                         borderBottomLeftRadius: 0,
                                         borderBottomRightRadius: 20,
                                         '&:hover': {
-                                            backgroundColor: "rgba(189,189,189,0.49)",
+                                            backgroundColor: '#FEFEFF',
                                         }
                                     }}
                                     aria-label="search"
