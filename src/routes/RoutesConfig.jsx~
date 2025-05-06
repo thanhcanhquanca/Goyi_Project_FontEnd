@@ -1,12 +1,12 @@
 import {Routes,Route} from "react-router";
-import ShowUser from "../layouts/user/index.jsx";
-import ShowUserHome from "../layouts/user/index.jsx";
+import ShowUserLayout from "../layouts/user/UserLayout.jsx";
+
 
 function RoutesIndex(){
     return(
         <Routes>
             <Route>
-                <Route path={"/home"} element={<ShowUserHome/>}></Route>
+                <Route path={"/home"} element={<ShowUserLayout/>}></Route>
             </Route>
         </Routes>
     )

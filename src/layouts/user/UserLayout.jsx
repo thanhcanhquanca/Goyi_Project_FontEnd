@@ -11,7 +11,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import MicIcon from '@mui/icons-material/Mic';
 import KeyboardIcon from '@mui/icons-material/Keyboard';
 
-function ShowUserHome() {
+function ShowUserLayout() {
     return (
         <Box sx={{ flexGrow: 1 }}>
             <Box position="static">
@@ -100,32 +100,32 @@ function ShowUserHome() {
                     {/*sử lý giao diện nút nhấn chuông , ảnh đại diện , nút tạo */}
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
 
-                        <Box sx={{ mr: 4 }}>
+                        <Box sx={{ mr: 3 }}>
                             <IconButton sx={{borderRadius:5, backgroundColor: 'rgba(255,255,255,0.29)',px:1.8 ,height:36}}>
                                 <AddIcon sx={{color:'black'}} />
                                 <Typography sx={{ ml: 1, fontSize: 13 ,color:'black'}}>Tạo</Typography>
                             </IconButton>
                         </Box>
 
-                           <Box sx={{mr:1}}>
-                               <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                                   <Badge badgeContent={4} color="error">
-                                       <MailIcon />
-                                   </Badge>
-                               </IconButton>
-                           </Box>
+                        <Box sx={{mr:1}}>
+                            <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+                                <Badge badgeContent={4} color="error">
+                                    <MailIcon />
+                                </Badge>
+                            </IconButton>
+                        </Box>
 
-                            <Box sx={{mr:5}}>
-                                <IconButton
-                                    size="large"
-                                    aria-label="show 17 new notifications"
-                                    color="inherit"
-                                >
-                                    <Badge badgeContent={17} color="error">
-                                        <NotificationsIcon />
-                                    </Badge>
-                                </IconButton>
-                            </Box>
+                        <Box sx={{mr:3}}>
+                            <IconButton
+                                size="large"
+                                aria-label="show 17 new notifications"
+                                color="inherit"
+                            >
+                                <Badge badgeContent={17} color="error">
+                                    <NotificationsIcon />
+                                </Badge>
+                            </IconButton>
+                        </Box>
 
                         <Box>
                             <IconButton
@@ -135,7 +135,7 @@ function ShowUserHome() {
                                 aria-haspopup="true"
                                 color="inherit"
                             >
-                                <AccountCircle />
+                                <AccountCircle sx={{height:30, width:30}} />
                             </IconButton>
                         </Box>
                     </Box>
@@ -145,4 +145,4 @@ function ShowUserHome() {
     );
 }
 
-export default ShowUserHome;
+export default ShowUserLayout;

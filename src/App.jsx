@@ -1,11 +1,11 @@
 import './App.css'
-import RoutesIndex from "./routes/index.jsx";
+import RoutesConfig from "./routes/RoutesConfig.jsx";
 
 function App() {
 
   return (
     <>
-        <RoutesIndex/>
+        <RoutesConfig/>
     </>
   )
 }
