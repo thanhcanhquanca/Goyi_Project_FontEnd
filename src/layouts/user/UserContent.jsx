@@ -3,19 +3,21 @@ import { Paper } from "@mui/material";
 import React from "react";
 import { Outlet } from 'react-router';
 
+// Định nghĩa component UserContent để hiển thị nội dung chính
 function UserContent({ sidebarOpen }) {
     return (
         <>
-            {/* Main Content */}
+            {/*// Vùng chứa nội dung chính*/}
             <Box
                 sx={{
-                    width: sidebarOpen ? '87%' : '100%',
-                    backgroundColor: '#e0e0e0',
-                    height: '100%',
-                    overflowY: 'auto',
-                    transition: 'width 0.3s ease-in-out',
+                    width: sidebarOpen ? '87%' : '100%', // Điều chỉnh chiều rộng dựa trên trạng thái sidebar
+                    backgroundColor: '#e0e0e0', // Màu nền xám nhạt
+                    height: '100%', // Chiều cao full màn hình
+                    overflowY: 'auto', // Cho phép cuộn dọc
+                    transition: 'width 0.3s ease-in-out', // Hiệu ứng chuyển đổi mượt
                 }}
             >
+                {/*// Chèn nội dung từ các route con*/}
                 <Paper sx={{ minHeight: '200vh', p: 2 }}>
                     <Outlet />
                 </Paper>
@@ -24,4 +26,5 @@ function UserContent({ sidebarOpen }) {
     );
 }
 
+// Xuất component để sử dụng trong các file khác
 export default UserContent;

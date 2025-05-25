@@ -4,69 +4,86 @@ import UserHeader from './UserHeader';
 import SearchPopup from './SearchPopup';
 import SideBar from './SideBar';
 import UserContent from './UserContent';
-import {useMediaQuery, useTheme} from "@mui/material";
+import { useMediaQuery, useTheme } from "@mui/material";
 
+// Định nghĩa component ShowUserLayout để quản lý bố cục giao diện chính
 function ShowUserLayout() {
+    // Sử dụng theme để kiểm tra kích thước màn hình
     const theme = useTheme();
-    const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-    const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm')); // Kiểm tra màn hình nhỏ
+    const isMediumScreen = useMediaQuery(theme.breakpoints.down('md')); // Kiểm tra màn hình trung bình
+
+    // Quản lý trạng thái hiển thị popup tìm kiếm
     const [openSearch, setOpenSearch] = useState(false);
+    // Quản lý trạng thái hiển thị sidebar
     const [sidebarOpen, setSidebarOpen] = useState(true);
+    // Quản lý trạng thái animation của sidebar
     const [isAnimating, setIsAnimating] = useState(false);
 
+    // Hàm mở popup tìm kiếm
     const handleOpenSearch = () => {
-        setOpenSearch(true);
+        setOpenSearch(true); // Cập nhật state để hiển thị popup
     };
 
+    // Hàm đóng popup tìm kiếm
     const handleCloseSearch = () => {
-        setOpenSearch(false);
+        setOpenSearch(false); // Cập nhật state để ẩn popup
     };
 
+    // Hàm bật/tắt sidebar
     const toggleSidebar = () => {
-        if (!isAnimating) {
-            setIsAnimating(true);
-            setSidebarOpen((prev) => !prev);
+        if (!isAnimating) { // Ngăn toggle liên tục khi đang animating
+            setIsAnimating(true); // Đặt trạng thái animating
+            setSidebarOpen((prev) => !prev); // Đảo ngược trạng thái sidebar
         }
     };
 
+    // Hook useEffect để reset trạng thái animating sau khi animation hoàn tất
     useEffect(() => {
         if (isAnimating) {
             const timer = setTimeout(() => {
-                setIsAnimating(false);
-            }, 300); // Match this with the transition duration (0.3s)
-            return () => clearTimeout(timer);
+                setIsAnimating(false); // Đặt lại trạng thái sau 0.3s
+            }, 300); // Thời gian khớp với transition
+            return () => clearTimeout(timer); // Dọn dẹp timer khi component unmount
         }
     }, [isAnimating]);
 
     return (
         <Box sx={{ flexGrow: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+            {/*// Vùng chứa header và popup tìm kiếm*/}
             <Box position="static" sx={{ overflow: 'hidden' }}>
+                {/*// Component header*/}
                 <UserHeader
                     isSmallScreen={isSmallScreen}
                     isMediumScreen={isMediumScreen}
                     handleOpenSearch={handleOpenSearch}
                     toggleSidebar={toggleSidebar}
                 />
+                {/*// Component popup tìm kiếm*/}
                 <SearchPopup
                     openSearch={openSearch}
                     isSmallScreen={isSmallScreen}
                     handleCloseSearch={handleCloseSearch}
                 />
             </Box>
+            {/*// Vùng chứa sidebar và nội dung chính*/}
             <Box
                 sx={{
                     flexGrow: 1,
-                    mt: '60px',
-                    height: 'calc(100vh - 60px)',
+                    mt: '60px', // Khoảng cách để tránh chồng lấn với header
+                    height: 'calc(100vh - 60px)', // Chiều cao còn lại của màn hình
                     display: 'flex',
                     width: '100vw',
                 }}
             >
+                {/*// Component sidebar*/}
                 <SideBar sidebarOpen={sidebarOpen} />
+                {/*// Component nội dung chính*/}
                 <UserContent sidebarOpen={sidebarOpen} />
             </Box>
         </Box>
     );
 }
 
+// Xuất component để sử dụng trong các file khác
 export default ShowUserLayout;

@@ -1,25 +1,38 @@
 import { Routes, Route } from "react-router";
 import ShowUserLayout from "../layouts/user/UserLayout.jsx";
 import ContentIndex from "../components/user/ContentHomeOutlet.jsx";
+import ContentProfileOutlet from "../components/user/ContentProfileOutlet.jsx";
+import ContentPostOutlet from "../components/user/ContentPostOutlet.jsx";
 
 function RoutesConfig() {
+    // Component cho route trang chủ
     const UserContentHomeOutlet = () => (
         <section style={{ padding: "4px" }}>
             <ContentIndex />
         </section>
     );
 
-    const UserContentProfileOutlet = () => (
+    // Component cho route hồ sơ người dùng chi tiết
+    const UserProfileOutlet = () => (
         <section style={{ padding: "4px" }}>
-            <ContentIndex />
+            <ContentProfileOutlet />
+        </section>
+    );
+
+    // Component cho route hồ sơ người dùng chi tiết
+    const UserPostOutlet = () => (
+        <section style={{ padding: "4px" }}>
+            <ContentPostOutlet />
         </section>
     );
 
     return (
         <Routes>
             <Route path="/home" element={<ShowUserLayout />}>
+                {/*// Route con cho trang chính với sidebar*/}
                 <Route index element={<UserContentHomeOutlet />} />
-                <Route index element={<UserContentProfileOutlet />} />
+                <Route path="user-profile" element={<UserProfileOutlet />} />
+                <Route path="user-post" element={<UserPostOutlet />} />
             </Route>
         </Routes>
     );

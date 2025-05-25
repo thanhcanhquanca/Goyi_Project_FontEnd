@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-    Paper, Icon, IconButton, InputBase, Typography, Badge
+    Paper, Icon, IconButton, InputBase, Typography, Badge, MenuItem, Menu, ListItemIcon, Dialog, Tabs, Tab, Box, TextField, Button, Grid, InputAdornment
 } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import MailIcon from '@mui/icons-material/Mail';
@@ -10,142 +10,466 @@ import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
 import MicIcon from '@mui/icons-material/Mic';
 import KeyboardIcon from '@mui/icons-material/Keyboard';
-import Box from "@mui/material/Box";
+import SettingsIcon from '@mui/icons-material/Settings';
+import LogoutIcon from '@mui/icons-material/Logout';
+import LoginIcon from '@mui/icons-material/Login';
+import { useNavigate } from "react-router";
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
+// Định nghĩa component UserHeader để hiển thị thanh header
 function UserHeader({ isSmallScreen, isMediumScreen, handleOpenSearch, toggleSidebar }) {
-    return (
-        <Box
-            sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                height: 60,
-                backgroundColor: '#d6bfff',
-                borderRadius: 1,
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                px: 2,
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-                zIndex: 1000,
-            }}
-        >
-            {/* Menu + Logo */}
-            <Box sx={{ display: 'flex', alignItems: 'center', minWidth: 0 }}>
-                <Icon sx={{ mr: 2 }}>
-                    <IconButton onClick={toggleSidebar}>
-                        <MenuIcon />
-                    </IconButton>
-                </Icon>
-                <Typography
-                    variant="h6"
-                    noWrap
-                    component="div"
-                    sx={{ fontWeight: 600 }}
-                >
-                    GOYI
-                </Typography>
-            </Box>
+    const navigate = useNavigate(); // Khởi tạo hook useNavigate để điều hướng
+    const [anchorEl, setAnchorEl] = useState(null); // Quản lý vị trí menu avatar
+    const [openDialog, setOpenDialog] = useState(false); // Quản lý trạng thái dialog
+    const [tabValue, setTabValue] = useState(0); // Quản lý trạng thái tab (0: Đăng nhập, 1: Đăng ký)
+    const [showPassword, setShowPassword] = useState(false); // Quản lý hiển thị mật khẩu
 
-            {/* Thanh tìm kiếm hoặc icon tìm kiếm khi màn hình nhỏ */}
-            {!isSmallScreen ? (
-                <Box sx={{ display: 'flex', alignItems: 'center', flex: 1, justifyContent: 'center', mx: 2 }}>
-                    <Paper
-                        component="form"
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            width: '100%',
-                            maxWidth: isMediumScreen ? 400 : 600,
-                            height: 40,
-                            borderRadius: '50px',
-                            boxShadow: '0 0 4px rgba(0,0,0,0.1)',
-                        }}
-                    >
-                        <InputBase
-                            sx={{ ml: 3, flex: 1, fontSize: 15 }}
-                            placeholder="Tìm kiếm"
-                            inputProps={{ 'aria-label': 'tìm kiếm' }}
-                        />
-                        <IconButton sx={{ p: '10px', height: 40 }} aria-label="keyboard">
-                            <KeyboardIcon />
+    // Hàm xử lý khi nhấp vào nút Tạo
+    const handleCreateClick = () => {
+        navigate('/home/user-profile'); // Điều hướng đến trang ProfileUsers
+    };
+
+    // Hàm mở menu avatar
+    const handleAvatarClick = (event) => {
+        setAnchorEl(event.currentTarget); // Đặt vị trí menu
+    };
+
+    // Hàm đóng menu avatar
+    const handleMenuClose = () => {
+        setAnchorEl(null); // Đóng menu
+    };
+
+    // Hàm mở dialog
+    const handleOpenDialog = () => {
+        setOpenDialog(true);
+        handleMenuClose(); // Đóng menu khi mở dialog
+    };
+
+    // Hàm đóng dialog
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
+
+    // Hàm xử lý thay đổi tab
+    const handleTabChange = (event, newValue) => {
+        setTabValue(newValue);
+    };
+
+    // Hàm xử lý hiển thị/ẩn mật khẩu
+    const handleClickShowPassword = () => setShowPassword(!showPassword);
+    const handleMouseDownPassword = (event) => event.preventDefault();
+
+    return (
+        <>
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    height: 60,
+                    backgroundColor: '#d6bfff',
+                    borderRadius: 1,
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    px: 2,
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                    zIndex: 1000,
+                }}
+            >
+                <Box sx={{ display: 'flex', alignItems: 'center', minWidth: 0 }}>
+                    <Icon sx={{ mr: 2 }}>
+                        <IconButton onClick={toggleSidebar}>
+                            <MenuIcon />
                         </IconButton>
-                        <IconButton
-                            type="submit"
+                    </Icon>
+                    <Typography
+                        variant="h6"
+                        noWrap
+                        component="div"
+                        sx={{ fontWeight: 600 }}
+                    >
+                        GOYI
+                    </Typography>
+                </Box>
+
+                {!isSmallScreen ? (
+                    <Box sx={{ display: 'flex', alignItems: 'center', flex: 1, justifyContent: 'center', mx: 2 }}>
+                        <Paper
+                            component="form"
                             sx={{
-                                p: '10px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                width: '100%',
+                                maxWidth: isMediumScreen ? 400 : 600,
                                 height: 40,
-                                width: 70,
-                                borderRadius: 1,
-                                backgroundColor: "rgba(207,207,207,0.29)",
-                                borderTopLeftRadius: 0,
-                                borderTopRightRadius: 20,
-                                borderBottomLeftRadius: 0,
-                                borderBottomRightRadius: 20,
-                                '&:hover': {
-                                    backgroundColor: "rgba(189,189,189,0.49)",
-                                }
+                                borderRadius: '50px',
+                                boxShadow: '0 0 4px rgba(0,0,0,0.1)',
                             }}
-                            aria-label="search"
                         >
+                            <InputBase
+                                sx={{ ml: 3, flex: 1, fontSize: 15 }}
+                                placeholder="Tìm kiếm"
+                                inputProps={{ 'aria-label': 'tìm kiếm' }}
+                            />
+                            <IconButton sx={{ p: '10px', height: 40 }} aria-label="keyboard">
+                                <KeyboardIcon />
+                            </IconButton>
+                            <IconButton
+                                type="submit"
+                                sx={{
+                                    p: '10px',
+                                    height: 40,
+                                    width: 70,
+                                    borderRadius: 1,
+                                    backgroundColor: "rgba(207,207,207,0.29)",
+                                    borderTopLeftRadius: 0,
+                                    borderTopRightRadius: 20,
+                                    borderBottomLeftRadius: 0,
+                                    borderBottomRightRadius: 20,
+                                    '&:hover': {
+                                        backgroundColor: "rgba(189,189,189,0.49)",
+                                    }
+                                }}
+                                aria-label="search"
+                            >
+                                <SearchIcon />
+                            </IconButton>
+                        </Paper>
+                        <IconButton sx={{ ml: 1, backgroundColor: '#eee', height: 40 }} aria-label="microphone">
+                            <MicIcon />
+                        </IconButton>
+                    </Box>
+                ) : (
+                    <Box sx={{ display: 'flex', alignItems: 'center', flex: 1, justifyContent: 'center' }}>
+                        <IconButton onClick={handleOpenSearch} aria-label="search">
                             <SearchIcon />
                         </IconButton>
-                    </Paper>
-                    <IconButton sx={{ ml: 1, backgroundColor: '#eee', height: 40 }} aria-label="microphone">
-                        <MicIcon />
-                    </IconButton>
-                </Box>
-            ) : (
-                <Box sx={{ display: 'flex', alignItems: 'center', flex: 1, justifyContent: 'center' }}>
-                    <IconButton onClick={handleOpenSearch} aria-label="search">
-                        <SearchIcon />
-                    </IconButton>
-                </Box>
-            )}
+                    </Box>
+                )}
 
-            {/* Các biểu tượng bên phải */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                {/* Tạo */}
-                <IconButton
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <IconButton
+                        sx={{
+                            borderRadius: 5,
+                            backgroundColor: 'rgba(255,255,255,0.29)',
+                            px: 1.5,
+                            height: 36,
+                            '&:hover': {
+                                backgroundColor: 'rgba(255,255,255,0.5)',
+                            }
+                        }}
+                        onClick={handleCreateClick}
+                    >
+                        <AddIcon sx={{ color: 'black' }} />
+                        {!isSmallScreen && (
+                            <Typography sx={{ ml: 1, fontSize: 13, color: 'black' }}>Tạo</Typography>
+                        )}
+                    </IconButton>
+
+                    <IconButton size="large" aria-label="show mails" color="inherit">
+                        <Badge badgeContent={4} color="error">
+                            <MailIcon />
+                        </Badge>
+                    </IconButton>
+
+                    <IconButton size="large" aria-label="show notifications" color="inherit">
+
+                    </IconButton>
+
+                    <IconButton
+                        size="large"
+                        edge="end"
+                        aria-label="account"
+                        color="inherit"
+                        onClick={handleAvatarClick}
+                    >
+                        <AccountCircle sx={{ height: 30, width: 30 }} />
+                    </IconButton>
+                </Box>
+
+                <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                >
+                    <MenuItem onClick={handleOpenDialog}>
+                        <ListItemIcon>
+                            <LoginIcon fontSize="small" />
+                        </ListItemIcon>
+                        Tài Khoản
+                    </MenuItem>
+                    <MenuItem>
+                        <ListItemIcon>
+                            <SettingsIcon fontSize="small" />
+                        </ListItemIcon>
+                        Cài Đặt
+                    </MenuItem>
+                    <MenuItem>
+                        <ListItemIcon>
+                            <LogoutIcon fontSize="small" />
+                        </ListItemIcon>
+                        Đăng Xuất
+                    </MenuItem>
+                </Menu>
+            </Box>
+
+            <Dialog
+                open={openDialog}
+                onClose={handleCloseDialog}
+                fullScreen
+                sx={{
+                    '& .MuiDialog-paper': {
+                        backgroundColor: 'rgba(0,0,0,0.5)',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                }}
+            >
+                <Paper
                     sx={{
-                        borderRadius: 5,
-                        backgroundColor: 'rgba(255,255,255,0.29)',
-                        px: 1.5,
-                        height: 36,
-                        '&:hover': {
-                            backgroundColor: 'rgba(255,255,255,0.5)',
-                        }
+                        width: isSmallScreen ? '400px' : '800px',
+                        maxWidth: '90vw',
+                        borderRadius: 16,
+                        bgcolor: '#B0C4DE',
+                        p: 2,
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                        position: 'relative',
                     }}
                 >
-                    <AddIcon sx={{ color: 'black' }} />
-                    {!isSmallScreen && (
-                        <Typography sx={{ ml: 1, fontSize: 13, color: 'black' }}>Tạo</Typography>
-                    )}
-                </IconButton>
-
-                {/* Mail */}
-                <IconButton size="large" aria-label="show mails" color="inherit">
-                    <Badge badgeContent={4} color="error">
-                        <MailIcon />
-                    </Badge>
-                </IconButton>
-
-                {/* thông báo */}
-                <IconButton size="large" aria-label="show notifications" color="inherit">
-                    <Badge badgeContent={17} color="error">
-                        <NotificationsIcon />
-                    </Badge>
-                </IconButton>
-
-                {/* ảnh đại diện cá nhân */}
-                <IconButton size="large" edge="end" aria-label="account" color="inherit">
-                    <AccountCircle sx={{ height: 30, width: 30 }} />
-                </IconButton>
-            </Box>
-        </Box>
+                    <IconButton
+                        aria-label="close"
+                        onClick={handleCloseDialog}
+                        sx={{
+                            position: 'absolute',
+                            right: 8,
+                            top: 8,
+                            color: '#fff',
+                        }}
+                    >
+                        <Box sx={{ width: 24, height: 24, borderRadius: '50%', bgcolor: '#ccc', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>x</Box>
+                    </IconButton>
+                    <Grid container sx={{ height: '100%' }}>
+                        <Grid item xs={3.6} sx={{ bgcolor: '#B0C4DE', p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                            <Typography variant="body2" color="black" sx={{ mb: 1 }}>Đăng nhập bằng QR Code app</Typography>
+                            <Box sx={{ width: 100, height: 100, bgcolor: '#fff', display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 1 }}>
+                                <Typography>QR Code</Typography>
+                            </Box>
+                        </Grid>
+                        <Grid item xs={8.4} sx={{ bgcolor: '#B0C4DE', p: 2, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                            <Box sx={{ mb: 2, textAlign: 'center' }}>
+                                <Typography
+                                    variant="h6"
+                                    color="red"
+                                    component="span"
+                                    onClick={() => handleTabChange(null, 0)}
+                                    sx={{
+                                        cursor: 'pointer',
+                                        mr: 1,
+                                        '&:hover': { textDecoration: 'underline' },
+                                        fontWeight: tabValue === 0 ? 'bold' : 'normal',
+                                        textDecoration: tabValue === 0 ? 'underline' : 'none',
+                                    }}
+                                >
+                                    Đăng Nhập QeZi
+                                </Typography>
+                                <Typography
+                                    variant="h6"
+                                    color="red"
+                                    component="span"
+                                    onClick={() => handleTabChange(null, 1)}
+                                    sx={{
+                                        cursor: 'pointer',
+                                        '&:hover': { textDecoration: 'underline' },
+                                        fontWeight: tabValue === 1 ? 'bold' : 'normal',
+                                        textDecoration: tabValue === 1 ? 'underline' : 'none',
+                                    }}
+                                >
+                                    || Đăng ký QeZi
+                                </Typography>
+                            </Box>
+                            {tabValue === 0 && (
+                                <Box>
+                                    <TextField
+                                        label="Số điện thoại"
+                                        variant="outlined"
+                                        fullWidth
+                                        value="+84"
+                                        InputProps={{
+                                            startAdornment: <InputAdornment position="start">+84</InputAdornment>,
+                                        }}
+                                        sx={{
+                                            mb: 2,
+                                            '& .MuiOutlinedInput-root': {
+                                                borderRadius: 8,
+                                                bgcolor: '#fff',
+                                            },
+                                        }}
+                                    />
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                                        <TextField
+                                            label="Mật Khẩu"
+                                            type={showPassword ? 'text' : 'password'}
+                                            variant="outlined"
+                                            fullWidth
+                                            sx={{
+                                                mr: 1,
+                                                '& .MuiOutlinedInput-root': {
+                                                    borderRadius: 8,
+                                                    bgcolor: '#fff',
+                                                },
+                                            }}
+                                            InputProps={{
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            aria-label="toggle password visibility"
+                                                            onClick={handleClickShowPassword}
+                                                            onMouseDown={handleMouseDownPassword}
+                                                        >
+                                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                ),
+                                            }}
+                                        />
+                                        <Typography
+                                            variant="body2"
+                                            color="blue"
+                                            sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                                        >
+                                            quên mật khẩu ?
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                                        <Button variant="contained" sx={{ bgcolor: '#32CD32', '&:hover': { bgcolor: '#28A428' }, borderRadius: 8, width: '48%' }}>
+                                            Đăng Ký
+                                        </Button>
+                                        <Button variant="contained" sx={{ bgcolor: '#1E90FF', '&:hover': { bgcolor: '#1C86EE' }, borderRadius: 8, width: '48%' }}>
+                                            Đăng Nhập
+                                        </Button>
+                                    </Box>
+                                    <Typography variant="body2" color="blue" sx={{ textAlign: 'center', mt: 1 }}>
+                                        Đăng nhập bằng thông tin tài khoản hoặc gửi mã OTP qua tin nhắn
+                                    </Typography>
+                                </Box>
+                            )}
+                            {tabValue === 1 && (
+                                <Box>
+                                    <TextField
+                                        label="Số điện thoại"
+                                        variant="outlined"
+                                        fullWidth
+                                        value="+84"
+                                        InputProps={{
+                                            startAdornment: <InputAdornment position="start">+84</InputAdornment>,
+                                        }}
+                                        sx={{
+                                            mb: 2,
+                                            '& .MuiOutlinedInput-root': {
+                                                borderRadius: 8,
+                                                bgcolor: '#fff',
+                                            },
+                                        }}
+                                    />
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                                        <TextField
+                                            label="Mật Khẩu"
+                                            type={showPassword ? 'text' : 'password'}
+                                            variant="outlined"
+                                            fullWidth
+                                            sx={{
+                                                mr: 1,
+                                                '& .MuiOutlinedInput-root': {
+                                                    borderRadius: 8,
+                                                    bgcolor: '#fff',
+                                                },
+                                            }}
+                                            InputProps={{
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            aria-label="toggle password visibility"
+                                                            onClick={handleClickShowPassword}
+                                                            onMouseDown={handleMouseDownPassword}
+                                                        >
+                                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                ),
+                                            }}
+                                        />
+                                        <Typography
+                                            variant="body2"
+                                            color="blue"
+                                            sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                                        >
+                                            quên mật khẩu ?
+                                        </Typography>
+                                    </Box>
+                                    <TextField
+                                        label="Email"
+                                        variant="outlined"
+                                        fullWidth
+                                        sx={{
+                                            mb: 2,
+                                            '& .MuiOutlinedInput-root': {
+                                                borderRadius: 8,
+                                                bgcolor: '#fff',
+                                            },
+                                        }}
+                                    />
+                                    <TextField
+                                        label="Xác nhận mật khẩu"
+                                        type={showPassword ? 'text' : 'password'}
+                                        variant="outlined"
+                                        fullWidth
+                                        sx={{
+                                            mb: 2,
+                                            '& .MuiOutlinedInput-root': {
+                                                borderRadius: 8,
+                                                bgcolor: '#fff',
+                                            },
+                                        }}
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <IconButton
+                                                        aria-label="toggle password visibility"
+                                                        onClick={handleClickShowPassword}
+                                                        onMouseDown={handleMouseDownPassword}
+                                                    >
+                                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                    />
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                                        <Button variant="contained" sx={{ bgcolor: '#32CD32', '&:hover': { bgcolor: '#28A428' }, borderRadius: 8, width: '48%' }}>
+                                            Đăng Ký
+                                        </Button>
+                                        <Button variant="contained" sx={{ bgcolor: '#1E90FF', '&:hover': { bgcolor: '#1C86EE' }, borderRadius: 8, width: '48%' }}>
+                                            Đăng Nhập
+                                        </Button>
+                                    </Box>
+                                    <Typography variant="body2" color="blue" sx={{ textAlign: 'center', mt: 1 }}>
+                                        Đăng nhập bằng thông tin tài khoản hoặc gửi mã OTP qua tin nhắn
+                                    </Typography>
+                                </Box>
+                            )}
+                        </Grid>
+                    </Grid>
+                </Paper>
+            </Dialog>
+        </>
     );
 }
 

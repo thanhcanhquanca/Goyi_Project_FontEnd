@@ -29,11 +29,11 @@ function SearchPopup({ openSearch, isSmallScreen, handleCloseSearch }) {
                 boxShadow: '0px 2px 10px rgba(0,0,0,0.2)' // Đổ bóng cho popup
             }}
         >
-            {/*// Nút quay lại để đóng popup*/}
+            // Nút quay lại để đóng popup
             <IconButton onClick={handleCloseSearch}>
                 <ArrowBackIcon />
             </IconButton>
-            {/*// Thanh tìm kiếm dạng Paper*/}
+            // Thanh tìm kiếm dạng Paper
             <Paper
                 component="form"
                 sx={{
@@ -46,17 +46,17 @@ function SearchPopup({ openSearch, isSmallScreen, handleCloseSearch }) {
                     boxShadow: '0 0 4px rgba(0,0,0,0.1)', // Đổ bóng nhẹ
                 }}
             >
-                {/*// Trường nhập liệu tìm kiếm*/}
+                // Trường nhập liệu tìm kiếm
                 <InputBase
                     sx={{ ml: 2, flex: 1, fontSize: 15 }}
                     placeholder="Tìm kiếm"
                     inputProps={{ 'aria-label': 'tìm kiếm' }}
                 />
-                {/*// Nút hiển thị bàn phím ảo*/}
+                // Nút hiển thị bàn phím ảo
                 <IconButton sx={{ p: '10px' }} aria-label="keyboard">
                     <KeyboardIcon />
                 </IconButton>
-                {/*// Nút tìm kiếm*/}
+                // Nút tìm kiếm
                 <IconButton
                     type="submit"
                     sx={{
@@ -78,7 +78,7 @@ function SearchPopup({ openSearch, isSmallScreen, handleCloseSearch }) {
                     <SearchIcon />
                 </IconButton>
             </Paper>
-            {/*// Nút micro cho tìm kiếm bằng giọng nói*/}
+            // Nút micro cho tìm kiếm bằng giọng nói
             <IconButton sx={{ ml: 1 }} aria-label="microphone">
                 <MicIcon />
             </IconButton>

@@ -1,8 +1,0 @@
-function ContentProfile() {
-    return (
-        <>
-            profile view3
-        </>
-    );
-}
-export default ContentProfile
