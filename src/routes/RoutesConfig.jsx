@@ -1,9 +1,15 @@
 import { Routes, Route } from "react-router";
 import ShowUserLayout from "../layouts/user/UserLayout.jsx";
-import ContentIndex from "../components/user/ContentIndex.jsx";
+import ContentIndex from "../components/user/ContentHomeOutlet.jsx";
 
 function RoutesConfig() {
-    const UserContentOutlet = () => (
+    const UserContentHomeOutlet = () => (
+        <section style={{ padding: "4px" }}>
+            <ContentIndex />
+        </section>
+    );
+
+    const UserContentProfileOutlet = () => (
         <section style={{ padding: "4px" }}>
             <ContentIndex />
         </section>
@@ -12,7 +18,8 @@ function RoutesConfig() {
     return (
         <Routes>
             <Route path="/home" element={<ShowUserLayout />}>
-                <Route index element={<UserContentOutlet />} />
+                <Route index element={<UserContentHomeOutlet />} />
+                <Route index element={<UserContentProfileOutlet />} />
             </Route>
         </Routes>
     );

@@ -12,7 +12,7 @@ import MicIcon from '@mui/icons-material/Mic';
 import KeyboardIcon from '@mui/icons-material/Keyboard';
 import Box from "@mui/material/Box";
 
-function UserHeader({ isSmallScreen, isMediumScreen, handleOpenSearch }) {
+function UserHeader({ isSmallScreen, isMediumScreen, handleOpenSearch, toggleSidebar }) {
     return (
         <Box
             sx={{
@@ -38,16 +38,14 @@ function UserHeader({ isSmallScreen, isMediumScreen, handleOpenSearch }) {
                 <Icon sx={{ mr: 2 }}>
                     <MenuIcon />
                 </Icon>
-                {!isSmallScreen && (
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="div"
-                        sx={{ fontWeight: 600 }}
-                    >
-                        GOYI
-                    </Typography>
-                )}
+                <Typography
+                    variant="h6"
+                    noWrap
+                    component="div"
+                    sx={{ fontWeight: 600 }}
+                >
+                    GOYI
+                </Typography>
             </Box>
 
             {/* Thanh tìm kiếm hoặc icon tìm kiếm khi màn hình nhỏ */}
@@ -110,19 +108,20 @@ function UserHeader({ isSmallScreen, isMediumScreen, handleOpenSearch }) {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 {/* Tạo */}
                 <IconButton
+                    onClick={toggleSidebar}
                     sx={{
                         borderRadius: 5,
-                        backgroundColor: 'rgba(255,255,255,0.29)',
+                        backgroundColor: 'rgba(255,0,0,0.29)', // Red background for "Tạo" button
                         px: 1.5,
                         height: 36,
                         '&:hover': {
-                            backgroundColor: 'rgba(255,255,255,0.5)',
+                            backgroundColor: 'rgba(255,0,0,0.5)',
                         }
                     }}
                 >
-                    <AddIcon sx={{ color: 'black' }} />
+                    <AddIcon sx={{ color: 'white' }} />
                     {!isSmallScreen && (
-                        <Typography sx={{ ml: 1, fontSize: 13, color: 'black' }}>Tạo</Typography>
+                        <Typography sx={{ ml: 1, fontSize: 13, color: 'white' }}>Tạo</Typography>
                     )}
                 </IconButton>
 

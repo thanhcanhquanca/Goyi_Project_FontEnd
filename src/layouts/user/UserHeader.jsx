@@ -12,7 +12,7 @@ import MicIcon from '@mui/icons-material/Mic';
 import KeyboardIcon from '@mui/icons-material/Keyboard';
 import Box from "@mui/material/Box";
 
-function UserHeader({ isSmallScreen, isMediumScreen, handleOpenSearch }) {
+function UserHeader({ isSmallScreen, isMediumScreen, handleOpenSearch, toggleSidebar }) {
     return (
         <Box
             sx={{
@@ -36,7 +36,9 @@ function UserHeader({ isSmallScreen, isMediumScreen, handleOpenSearch }) {
             {/* Menu + Logo */}
             <Box sx={{ display: 'flex', alignItems: 'center', minWidth: 0 }}>
                 <Icon sx={{ mr: 2 }}>
-                    <MenuIcon />
+                    <IconButton onClick={toggleSidebar}>
+                        <MenuIcon />
+                    </IconButton>
                 </Icon>
                 <Typography
                     variant="h6"

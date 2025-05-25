@@ -1,4 +1,4 @@
-function ContentIndex() {
+function ContentHomeOutlet() {
     return (
         <>
             content view3
@@ -6,4 +6,4 @@ function ContentIndex() {
     );
 }
 
-export default ContentIndex;
+export default ContentHomeOutlet;

@@ -1,0 +1,26 @@
+import Box from "@mui/material/Box";
+import { Paper } from "@mui/material";
+import React from "react";
+import { Outlet } from 'react-router';
+
+function UserContent({ sidebarOpen }) {
+    return (
+        <Box
+            sx={{
+                flexGrow: 1,
+                width: sidebarOpen ? 'calc(100vw - 13%)' : '100vw',
+                minWidth: sidebarOpen ? 'calc(100vw - 180px)' : '100vw',
+                backgroundColor: '#e0e0e0',
+                height: '100%',
+                overflowY: 'auto',
+                transition: 'width 0.3s ease-in-out, minWidth 0.3s ease-in-out',
+            }}
+        >
+            <Paper sx={{ minHeight: '200vh', p: 2, width: '100%' }}>
+                <Outlet />
+            </Paper>
+        </Box>
+    );
+}
+
+export default UserContent;
