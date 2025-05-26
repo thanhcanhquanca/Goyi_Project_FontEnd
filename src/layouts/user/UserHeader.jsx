@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-    Paper, Icon, IconButton, InputBase, Typography, Badge, MenuItem, Menu, ListItemIcon, Dialog, Tabs, Tab, Box, TextField, Button, Grid, InputAdornment
+    Paper, Icon, IconButton, InputBase, Typography, Badge, MenuItem, Menu, ListItemIcon, Dialog, Tabs, Tab, Box, TextField, Button, Grid, InputAdornment, Link
 } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import MailIcon from '@mui/icons-material/Mail';
@@ -14,79 +14,77 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
 import { useNavigate } from "react-router";
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import LoginRegisterDialog from './LoginRegisterDialog';
 
-// Định nghĩa component UserHeader để hiển thị thanh header
+// Component này dùng để hiển thị thanh header chính của ứng dụng GOYI
 function UserHeader({ isSmallScreen, isMediumScreen, handleOpenSearch, toggleSidebar }) {
-    const navigate = useNavigate(); // Khởi tạo hook useNavigate để điều hướng
-    const [anchorEl, setAnchorEl] = useState(null); // Quản lý vị trí menu avatar
-    const [openDialog, setOpenDialog] = useState(false); // Quản lý trạng thái dialog
-    const [tabValue, setTabValue] = useState(0); // Quản lý trạng thái tab (0: Đăng nhập, 1: Đăng ký)
-    const [showPassword, setShowPassword] = useState(false); // Quản lý hiển thị mật khẩu
+    const navigate = useNavigate(); // Hook để điều hướng giữa các trang
+    const [anchorEl, setAnchorEl] = useState(null); // State để quản lý vị trí menu avatar
+    const [openDialog, setOpenDialog] = useState(false); // State để quản lý trạng thái mở dialog đăng nhập/đăng ký
+    const [tabValue, setTabValue] = useState(0); // State để quản lý tab (0: Đăng nhập, 1: Đăng ký)
 
-    // Hàm xử lý khi nhấp vào nút Tạo
+    // Hàm xử lý khi nhấp vào nút "Tạo" để chuyển hướng đến trang hồ sơ người dùng
     const handleCreateClick = () => {
-        navigate('/home/user-profile'); // Điều hướng đến trang ProfileUsers
+        navigate('/home/user-profile');
     };
 
-    // Hàm mở menu avatar
+    // Hàm mở menu avatar khi nhấp vào biểu tượng tài khoản
     const handleAvatarClick = (event) => {
-        setAnchorEl(event.currentTarget); // Đặt vị trí menu
+        setAnchorEl(event.currentTarget);
     };
 
     // Hàm đóng menu avatar
     const handleMenuClose = () => {
-        setAnchorEl(null); // Đóng menu
+        setAnchorEl(null);
     };
 
-    // Hàm mở dialog
+    // Hàm mở dialog đăng nhập/đăng ký
     const handleOpenDialog = () => {
         setOpenDialog(true);
-        handleMenuClose(); // Đóng menu khi mở dialog
+        handleMenuClose();
     };
 
-    // Hàm đóng dialog
+    // Hàm đóng dialog đăng nhập/đăng ký
     const handleCloseDialog = () => {
         setOpenDialog(false);
     };
 
-    // Hàm xử lý thay đổi tab
+    // Hàm xử lý thay đổi tab (Đăng nhập hoặc Đăng ký)
     const handleTabChange = (event, newValue) => {
         setTabValue(newValue);
     };
 
-    // Hàm xử lý hiển thị/ẩn mật khẩu
-    const handleClickShowPassword = () => setShowPassword(!showPassword);
-    const handleMouseDownPassword = (event) => event.preventDefault();
-
     return (
         <>
+            {/* Thanh header chính của ứng dụng */}
             <Box
                 sx={{
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     height: 60,
-                    backgroundColor: '#d6bfff',
+                    backgroundColor: '#d6bfff', // Màu nền header
                     borderRadius: 1,
                     position: 'fixed',
                     top: 0,
                     left: 0,
                     right: 0,
                     px: 2,
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)', // Đổ bóng
                     overflow: 'hidden',
                     whiteSpace: 'nowrap',
-                    zIndex: 1000,
+                    zIndex: 1000, // Đảm bảo header nằm trên các phần khác
                 }}
             >
+                {/* Phần bên trái của header: Logo và nút menu */}
                 <Box sx={{ display: 'flex', alignItems: 'center', minWidth: 0 }}>
+                    {/* Nút mở/đóng sidebar */}
                     <Icon sx={{ mr: 2 }}>
                         <IconButton onClick={toggleSidebar}>
                             <MenuIcon />
                         </IconButton>
                     </Icon>
+                    {/* Logo của ứng dụng */}
                     <Typography
                         variant="h6"
                         noWrap
@@ -97,7 +95,9 @@ function UserHeader({ isSmallScreen, isMediumScreen, handleOpenSearch, toggleSid
                     </Typography>
                 </Box>
 
+                {/* Phần giữa của header: Thanh tìm kiếm */}
                 {!isSmallScreen ? (
+                    // Hiển thị thanh tìm kiếm đầy đủ trên màn hình lớn
                     <Box sx={{ display: 'flex', alignItems: 'center', flex: 1, justifyContent: 'center', mx: 2 }}>
                         <Paper
                             component="form"
@@ -105,20 +105,23 @@ function UserHeader({ isSmallScreen, isMediumScreen, handleOpenSearch, toggleSid
                                 display: 'flex',
                                 alignItems: 'center',
                                 width: '100%',
-                                maxWidth: isMediumScreen ? 400 : 600,
+                                maxWidth: isMediumScreen ? 400 : 600, // Điều chỉnh chiều rộng dựa trên kích thước màn hình
                                 height: 40,
                                 borderRadius: '50px',
                                 boxShadow: '0 0 4px rgba(0,0,0,0.1)',
                             }}
                         >
+                            {/* Trường nhập tìm kiếm */}
                             <InputBase
                                 sx={{ ml: 3, flex: 1, fontSize: 15 }}
                                 placeholder="Tìm kiếm"
                                 inputProps={{ 'aria-label': 'tìm kiếm' }}
                             />
+                            {/* Nút hiển thị bàn phím ảo */}
                             <IconButton sx={{ p: '10px', height: 40 }} aria-label="keyboard">
                                 <KeyboardIcon />
                             </IconButton>
+                            {/* Nút tìm kiếm */}
                             <IconButton
                                 type="submit"
                                 sx={{
@@ -140,11 +143,13 @@ function UserHeader({ isSmallScreen, isMediumScreen, handleOpenSearch, toggleSid
                                 <SearchIcon />
                             </IconButton>
                         </Paper>
+                        {/* Nút micro để tìm kiếm bằng giọng nói */}
                         <IconButton sx={{ ml: 1, backgroundColor: '#eee', height: 40 }} aria-label="microphone">
                             <MicIcon />
                         </IconButton>
                     </Box>
                 ) : (
+                    // Hiển thị chỉ biểu tượng tìm kiếm trên màn hình nhỏ
                     <Box sx={{ display: 'flex', alignItems: 'center', flex: 1, justifyContent: 'center' }}>
                         <IconButton onClick={handleOpenSearch} aria-label="search">
                             <SearchIcon />
@@ -152,7 +157,9 @@ function UserHeader({ isSmallScreen, isMediumScreen, handleOpenSearch, toggleSid
                     </Box>
                 )}
 
+                {/* Phần bên phải của header: Các nút hành động */}
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    {/* Nút "Tạo" để chuyển hướng đến trang hồ sơ */}
                     <IconButton
                         sx={{
                             borderRadius: 5,
@@ -171,16 +178,21 @@ function UserHeader({ isSmallScreen, isMediumScreen, handleOpenSearch, toggleSid
                         )}
                     </IconButton>
 
+                    {/* Nút thông báo email với badge */}
                     <IconButton size="large" aria-label="show mails" color="inherit">
                         <Badge badgeContent={4} color="error">
                             <MailIcon />
                         </Badge>
                     </IconButton>
 
+                    {/* Nút thông báo với badge */}
                     <IconButton size="large" aria-label="show notifications" color="inherit">
-
+                        <Badge badgeContent={17} color="error">
+                            <NotificationsIcon />
+                        </Badge>
                     </IconButton>
 
+                    {/* Nút avatar để mở menu tài khoản */}
                     <IconButton
                         size="large"
                         edge="end"
@@ -192,6 +204,7 @@ function UserHeader({ isSmallScreen, isMediumScreen, handleOpenSearch, toggleSid
                     </IconButton>
                 </Box>
 
+                {/* Menu tài khoản hiển thị khi nhấp vào avatar */}
                 <Menu
                     anchorEl={anchorEl}
                     open={Boolean(anchorEl)}
@@ -199,18 +212,21 @@ function UserHeader({ isSmallScreen, isMediumScreen, handleOpenSearch, toggleSid
                     anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                     transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                 >
+                    {/* Mở dialog đăng nhập/đăng ký */}
                     <MenuItem onClick={handleOpenDialog}>
                         <ListItemIcon>
                             <LoginIcon fontSize="small" />
                         </ListItemIcon>
                         Tài Khoản
                     </MenuItem>
+                    {/* Chuyển đến trang cài đặt */}
                     <MenuItem>
                         <ListItemIcon>
                             <SettingsIcon fontSize="small" />
                         </ListItemIcon>
                         Cài Đặt
                     </MenuItem>
+                    {/* Đăng xuất khỏi hệ thống */}
                     <MenuItem>
                         <ListItemIcon>
                             <LogoutIcon fontSize="small" />
@@ -218,257 +234,15 @@ function UserHeader({ isSmallScreen, isMediumScreen, handleOpenSearch, toggleSid
                         Đăng Xuất
                     </MenuItem>
                 </Menu>
-            </Box>
 
-            <Dialog
-                open={openDialog}
-                onClose={handleCloseDialog}
-                fullScreen
-                sx={{
-                    '& .MuiDialog-paper': {
-                        backgroundColor: 'rgba(0,0,0,0.5)',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }
-                }}
-            >
-                <Paper
-                    sx={{
-                        width: isSmallScreen ? '400px' : '800px',
-                        maxWidth: '90vw',
-                        borderRadius: 16,
-                        bgcolor: '#B0C4DE',
-                        p: 2,
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-                        position: 'relative',
-                    }}
-                >
-                    <IconButton
-                        aria-label="close"
-                        onClick={handleCloseDialog}
-                        sx={{
-                            position: 'absolute',
-                            right: 8,
-                            top: 8,
-                            color: '#fff',
-                        }}
-                    >
-                        <Box sx={{ width: 24, height: 24, borderRadius: '50%', bgcolor: '#ccc', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>x</Box>
-                    </IconButton>
-                    <Grid container sx={{ height: '100%' }}>
-                        <Grid item xs={3.6} sx={{ bgcolor: '#B0C4DE', p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                            <Typography variant="body2" color="black" sx={{ mb: 1 }}>Đăng nhập bằng QR Code app</Typography>
-                            <Box sx={{ width: 100, height: 100, bgcolor: '#fff', display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 1 }}>
-                                <Typography>QR Code</Typography>
-                            </Box>
-                        </Grid>
-                        <Grid item xs={8.4} sx={{ bgcolor: '#B0C4DE', p: 2, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                            <Box sx={{ mb: 2, textAlign: 'center' }}>
-                                <Typography
-                                    variant="h6"
-                                    color="red"
-                                    component="span"
-                                    onClick={() => handleTabChange(null, 0)}
-                                    sx={{
-                                        cursor: 'pointer',
-                                        mr: 1,
-                                        '&:hover': { textDecoration: 'underline' },
-                                        fontWeight: tabValue === 0 ? 'bold' : 'normal',
-                                        textDecoration: tabValue === 0 ? 'underline' : 'none',
-                                    }}
-                                >
-                                    Đăng Nhập QeZi
-                                </Typography>
-                                <Typography
-                                    variant="h6"
-                                    color="red"
-                                    component="span"
-                                    onClick={() => handleTabChange(null, 1)}
-                                    sx={{
-                                        cursor: 'pointer',
-                                        '&:hover': { textDecoration: 'underline' },
-                                        fontWeight: tabValue === 1 ? 'bold' : 'normal',
-                                        textDecoration: tabValue === 1 ? 'underline' : 'none',
-                                    }}
-                                >
-                                    || Đăng ký QeZi
-                                </Typography>
-                            </Box>
-                            {tabValue === 0 && (
-                                <Box>
-                                    <TextField
-                                        label="Số điện thoại"
-                                        variant="outlined"
-                                        fullWidth
-                                        value="+84"
-                                        InputProps={{
-                                            startAdornment: <InputAdornment position="start">+84</InputAdornment>,
-                                        }}
-                                        sx={{
-                                            mb: 2,
-                                            '& .MuiOutlinedInput-root': {
-                                                borderRadius: 8,
-                                                bgcolor: '#fff',
-                                            },
-                                        }}
-                                    />
-                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                                        <TextField
-                                            label="Mật Khẩu"
-                                            type={showPassword ? 'text' : 'password'}
-                                            variant="outlined"
-                                            fullWidth
-                                            sx={{
-                                                mr: 1,
-                                                '& .MuiOutlinedInput-root': {
-                                                    borderRadius: 8,
-                                                    bgcolor: '#fff',
-                                                },
-                                            }}
-                                            InputProps={{
-                                                endAdornment: (
-                                                    <InputAdornment position="end">
-                                                        <IconButton
-                                                            aria-label="toggle password visibility"
-                                                            onClick={handleClickShowPassword}
-                                                            onMouseDown={handleMouseDownPassword}
-                                                        >
-                                                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                        </IconButton>
-                                                    </InputAdornment>
-                                                ),
-                                            }}
-                                        />
-                                        <Typography
-                                            variant="body2"
-                                            color="blue"
-                                            sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
-                                        >
-                                            quên mật khẩu ?
-                                        </Typography>
-                                    </Box>
-                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                                        <Button variant="contained" sx={{ bgcolor: '#32CD32', '&:hover': { bgcolor: '#28A428' }, borderRadius: 8, width: '48%' }}>
-                                            Đăng Ký
-                                        </Button>
-                                        <Button variant="contained" sx={{ bgcolor: '#1E90FF', '&:hover': { bgcolor: '#1C86EE' }, borderRadius: 8, width: '48%' }}>
-                                            Đăng Nhập
-                                        </Button>
-                                    </Box>
-                                    <Typography variant="body2" color="blue" sx={{ textAlign: 'center', mt: 1 }}>
-                                        Đăng nhập bằng thông tin tài khoản hoặc gửi mã OTP qua tin nhắn
-                                    </Typography>
-                                </Box>
-                            )}
-                            {tabValue === 1 && (
-                                <Box>
-                                    <TextField
-                                        label="Số điện thoại"
-                                        variant="outlined"
-                                        fullWidth
-                                        value="+84"
-                                        InputProps={{
-                                            startAdornment: <InputAdornment position="start">+84</InputAdornment>,
-                                        }}
-                                        sx={{
-                                            mb: 2,
-                                            '& .MuiOutlinedInput-root': {
-                                                borderRadius: 8,
-                                                bgcolor: '#fff',
-                                            },
-                                        }}
-                                    />
-                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                                        <TextField
-                                            label="Mật Khẩu"
-                                            type={showPassword ? 'text' : 'password'}
-                                            variant="outlined"
-                                            fullWidth
-                                            sx={{
-                                                mr: 1,
-                                                '& .MuiOutlinedInput-root': {
-                                                    borderRadius: 8,
-                                                    bgcolor: '#fff',
-                                                },
-                                            }}
-                                            InputProps={{
-                                                endAdornment: (
-                                                    <InputAdornment position="end">
-                                                        <IconButton
-                                                            aria-label="toggle password visibility"
-                                                            onClick={handleClickShowPassword}
-                                                            onMouseDown={handleMouseDownPassword}
-                                                        >
-                                                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                        </IconButton>
-                                                    </InputAdornment>
-                                                ),
-                                            }}
-                                        />
-                                        <Typography
-                                            variant="body2"
-                                            color="blue"
-                                            sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
-                                        >
-                                            quên mật khẩu ?
-                                        </Typography>
-                                    </Box>
-                                    <TextField
-                                        label="Email"
-                                        variant="outlined"
-                                        fullWidth
-                                        sx={{
-                                            mb: 2,
-                                            '& .MuiOutlinedInput-root': {
-                                                borderRadius: 8,
-                                                bgcolor: '#fff',
-                                            },
-                                        }}
-                                    />
-                                    <TextField
-                                        label="Xác nhận mật khẩu"
-                                        type={showPassword ? 'text' : 'password'}
-                                        variant="outlined"
-                                        fullWidth
-                                        sx={{
-                                            mb: 2,
-                                            '& .MuiOutlinedInput-root': {
-                                                borderRadius: 8,
-                                                bgcolor: '#fff',
-                                            },
-                                        }}
-                                        InputProps={{
-                                            endAdornment: (
-                                                <InputAdornment position="end">
-                                                    <IconButton
-                                                        aria-label="toggle password visibility"
-                                                        onClick={handleClickShowPassword}
-                                                        onMouseDown={handleMouseDownPassword}
-                                                    >
-                                                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                    </IconButton>
-                                                </InputAdornment>
-                                            ),
-                                        }}
-                                    />
-                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                                        <Button variant="contained" sx={{ bgcolor: '#32CD32', '&:hover': { bgcolor: '#28A428' }, borderRadius: 8, width: '48%' }}>
-                                            Đăng Ký
-                                        </Button>
-                                        <Button variant="contained" sx={{ bgcolor: '#1E90FF', '&:hover': { bgcolor: '#1C86EE' }, borderRadius: 8, width: '48%' }}>
-                                            Đăng Nhập
-                                        </Button>
-                                    </Box>
-                                    <Typography variant="body2" color="blue" sx={{ textAlign: 'center', mt: 1 }}>
-                                        Đăng nhập bằng thông tin tài khoản hoặc gửi mã OTP qua tin nhắn
-                                    </Typography>
-                                </Box>
-                            )}
-                        </Grid>
-                    </Grid>
-                </Paper>
-            </Dialog>
+                {/* Component dialog đăng nhập/đăng ký */}
+                <LoginRegisterDialog
+                    open={openDialog}
+                    onClose={handleCloseDialog}
+                    tabValue={tabValue}
+                    handleTabChange={handleTabChange}
+                />
+            </Box>
         </>
     );
 }
