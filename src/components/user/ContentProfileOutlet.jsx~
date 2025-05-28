@@ -3,8 +3,10 @@ import Box from "@mui/material/Box";
 import DiamondIcon from '@mui/icons-material/Diamond';
 import SearchIcon from "@mui/icons-material/Search";
 import {useEffect, useRef, useState} from "react";
+import {useNavigate} from "react-router-dom";
 
 function ContentProfileOutlet() {
+    const navigate = useNavigate();
     const [selectedTab, setSelectedTab] = useState('post');
     const indicatorRef = useRef(null);
     const tabRefs = {
@@ -157,7 +159,7 @@ function ContentProfileOutlet() {
                         <Box sx={{ position: 'absolute', right: 0, top: 0,
                             height: '100%', display: 'flex', alignItems: 'center'
                             ,backgroundColor:'rgba(224,224,224,0.12)'
-                            ,borderRadius:'10px'
+                            ,borderRadius:'6px'
                         }}>
                             <InputBase
                                 placeholder="Tìm kiếm video của bạn"

@@ -1,0 +1,48 @@
+import { Box } from '@mui/material';
+import ManagementSidebar from './ManagementSidebar.jsx';
+import ManagementContent from './ManagementContent.jsx';
+import ManagementHeader from './ManagementHeader.jsx';
+import React, { useState } from 'react';
+
+function ShowUserManagementLayout() {
+    const [sidebarOpen, setSidebarOpen] = useState(true);
+
+    const toggleSidebar = () => {
+        setSidebarOpen((prev) => !prev);
+    };
+
+    return (
+        <Box
+            sx={{
+                flexGrow: 1,
+                overflow: 'hidden', // Tắt cuộn hoàn toàn
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100vh', // Đảm bảo chiều cao bằng viewport
+                width: '100vw', // Đảm bảo chiều rộng bằng viewport
+            }}
+        >
+            {/* Header */}
+            <Box position="static" sx={{ overflow: 'hidden' }}>
+                <ManagementHeader sidebarOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
+            </Box>
+            {/* Sidebar và Content */}
+            <Box
+                sx={{
+                    flexGrow: 1,
+                    marginTop: '60px',
+                    display: 'flex',
+                    width: '100vw',
+                    height: 'calc(100vh - 60px)', // Đảm bảo chiều cao đầy đủ
+                    overflow: 'hidden', // Tắt cuộn trong khu vực này
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', // Thêm transition cho layout
+                }}
+            >
+                <ManagementSidebar sidebarOpen={sidebarOpen} />
+                <ManagementContent sidebarOpen={sidebarOpen} />
+            </Box>
+        </Box>
+    );
+}
+
+export default ShowUserManagementLayout;

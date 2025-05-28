@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
-import UserHeader from './UserHeader';
-import SearchPopup from './SearchPopup';
-import SideBar from './SideBar';
-import UserContent from './UserContent';
+import UserHeader from './UserHeader.jsx';
+import SearchPopup from './SearchPopup.jsx';
+import SideBar from './SideBar.jsx';
+import UserContent from './UserContent.jsx';
 import { useMediaQuery, useTheme } from "@mui/material";
 
 function ShowUserLayout() {
@@ -34,7 +34,7 @@ function ShowUserLayout() {
         if (isAnimating) {
             const timer = setTimeout(() => {
                 setIsAnimating(false);
-            }, 500); // Match 0.5s transition duration
+            }, 300);
             return () => clearTimeout(timer);
         }
     }, [isAnimating]);
@@ -47,6 +47,7 @@ function ShowUserLayout() {
                     isMediumScreen={isMediumScreen}
                     handleOpenSearch={handleOpenSearch}
                     toggleSidebar={toggleSidebar}
+                    sidebarOpen={sidebarOpen} // Truyền sidebarOpen
                 />
                 <SearchPopup
                     openSearch={openSearch}

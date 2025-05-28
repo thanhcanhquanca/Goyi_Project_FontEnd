@@ -3,8 +3,10 @@ import Box from "@mui/material/Box";
 import DiamondIcon from '@mui/icons-material/Diamond';
 import SearchIcon from "@mui/icons-material/Search";
 import {useEffect, useRef, useState} from "react";
+import {useNavigate} from "react-router-dom";
 
 function ContentProfileOutlet() {
+    const navigate = useNavigate();
     const [selectedTab, setSelectedTab] = useState('post');
     const indicatorRef = useRef(null);
     const tabRefs = {
@@ -90,7 +92,8 @@ function ContentProfileOutlet() {
                                 width: 150,
                                 borderRadius: 6,
                                 mt: 2
-                            }}>Tùy Chỉnh</Button>
+                            }}  onClick={() => navigate('/management-profile')}
+                            >Tùy Chỉnh</Button>
 
                         </Box>
                     </Box>

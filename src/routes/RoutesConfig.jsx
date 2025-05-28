@@ -1,9 +1,9 @@
 import { Routes, Route } from "react-router";
-import ShowUserLayout from "../layouts/user/UserLayout.jsx";
+import ShowUserLayout from "../layouts/user/home/UserLayout.jsx";
 import ContentIndex from "../components/user/ContentHomeOutlet.jsx";
 import ContentProfileOutlet from "../components/user/ContentProfileOutlet.jsx";
 import ContentPostOutlet from "../components/user/ContentPostOutlet.jsx";
-import ShowUserManagementLayout from "../layouts/user/profile/ShowUserManagementLayout.jsx";
+import ShowUserManagementLayout from "../layouts/user/managemt_profile/ShowUserManagementLayout.jsx";
 
 function RoutesConfig() {
     // Component cho route trang chủ
@@ -43,7 +43,7 @@ function RoutesConfig() {
                 <Route path="user-post" element={<UserPostOutlet />} />
             </Route>
 
-            <Route path="/managment-profile" element={<UserManagement />}/>
+            <Route path="/management-profile" element={<UserManagement />}/>
         </Routes>
     );
 }

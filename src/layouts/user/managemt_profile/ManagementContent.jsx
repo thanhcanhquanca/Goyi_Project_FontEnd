@@ -1,0 +1,32 @@
+import React from 'react';
+import { Box, Grid } from '@mui/material';
+import { styled } from '@mui/material/styles';
+
+const Skeleton = styled('div')(({ theme, height }) => ({
+    backgroundColor: theme.palette.action.hover,
+    borderRadius: theme.shape.borderRadius,
+    height,
+    content: '" "',
+}));
+
+function ManagementContent({ sidebarOpen }) {
+    return (
+        <Box
+            sx={{
+                flexGrow: 1,
+                p: 3,
+                overflow: 'hidden',
+                transform: sidebarOpen ? 'translateX(250px)' : 'translateX(60px)', // Sử dụng transform thay vì margin
+                transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)', // Hiệu ứng mượt mà
+                width: sidebarOpen ? 'calc(100% - 250px)' : 'calc(100% - 60px)',
+                willChange: 'transform', // Tối ưu hiệu suất
+            }}
+        >
+            <Box >
+                Long mà than long
+            </Box>
+        </Box>
+    );
+}
+
+export default ManagementContent;

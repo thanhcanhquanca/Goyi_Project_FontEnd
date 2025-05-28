@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
-import UserHeader from './UserHeader';
-import SearchPopup from './SearchPopup';
-import SideBar from './SideBar';
-import UserContent from './UserContent';
+import UserHeader from './UserHeader.jsx';
+import SearchPopup from './SearchPopup.jsx';
+import SideBar from './SideBar.jsx';
+import UserContent from './UserContent.jsx';
 import { useMediaQuery, useTheme } from "@mui/material";
+import ShowUserManagementLayout from "../managemt_profile/ShowUserManagementLayout.jsx";
 
 // Định nghĩa component ShowUserLayout để quản lý bố cục giao diện chính
 function ShowUserLayout() {
@@ -65,6 +66,7 @@ function ShowUserLayout() {
                     isSmallScreen={isSmallScreen}
                     handleCloseSearch={handleCloseSearch}
                 />
+
             </Box>
             {/*// Vùng chứa sidebar và nội dung chính*/}
             <Box

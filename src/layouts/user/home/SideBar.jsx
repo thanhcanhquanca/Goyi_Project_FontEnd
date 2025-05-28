@@ -32,7 +32,7 @@ function SideBar({ sidebarOpen }) {
     {/* Định nghĩa style chung cho các nút trong sidebar*/}
     const buttonStyle = {
         justifyContent: "flex-start", // Căn chỉnh nội dung nút sang trái
-        mb: 1, // Margin dưới
+        mb: 1,
         color: "black",
         fontSize: "14px",
         textTransform: "none", // Không viết hoa chữ
@@ -59,19 +59,18 @@ function SideBar({ sidebarOpen }) {
     return (
         <Box
             sx={{
-                width: sidebarOpen ? '13%' : '0', // Chiều rộng phụ thuộc vào trạng thái sidebar
-                minWidth: sidebarOpen ? '180px' : '0', // Chiều rộng tối thiểu
-                backgroundColor: '#f0f0f0', // Màu nền
-                height: '100vh', // Chiều cao full màn hình
-                overflowY: 'auto', // Cho phép cuộn dọc
-                transform: sidebarOpen ? 'translateX(0)' : 'translateX(-100%)', // Animation trượt
-                transition: 'transform 0.3s ease-in-out, width 0.3s ease-in-out', // Hiệu ứng mượt
-                '&::-webkit-scrollbar': { width: '6px', display: 'none', height: '30px' }, // Ẩn thanh cuộn
+                width: sidebarOpen ? '13%' : '0%', // Chuyển từ 13% về 0% hoặc ngược lại
+                minWidth: sidebarOpen ? '180px' : '0px', // Đảm bảo chiều rộng tối thiểu
+                backgroundColor: '#f0f0f0',
+                height: '100vh',
+                overflowY: 'auto',
+                transition: 'width 0.3s ease-in-out, min-width 0.3s ease-in-out', // Chỉ transition width và min-width
+                '&::-webkit-scrollbar': { width: '6px', display: 'none', height: '30px' },
                 '&::-webkit-scrollbar-thumb': { backgroundColor: '#888', borderRadius: '4px' },
                 '&::-webkit-scrollbar-thumb:hover': { backgroundColor: '#555' },
-                scrollbarWidth: 'none', // Ẩn thanh cuộn trên Firefox
+                scrollbarWidth: 'none',
                 '&:hover': {
-                    '&::-webkit-scrollbar': { display: sidebarOpen ? 'block' : 'none' }, // Hiện thanh cuộn khi hover
+                    '&::-webkit-scrollbar': { display: sidebarOpen ? 'block' : 'none' },
                     scrollbarWidth: sidebarOpen ? 'thin' : 'none',
                     scrollbarColor: sidebarOpen ? '#888 #f0f0f0' : 'transparent',
                 },
