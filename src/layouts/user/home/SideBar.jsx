@@ -40,10 +40,10 @@ function SideBar({ sidebarOpen }) {
         minHeight: "40px",
         '& .MuiButton-startIcon': {
             minWidth: '32px',
-            color: '#444', // Màu icon
+            color: '#444',
         },
         '&:hover': {
-            backgroundColor: 'rgba(0,0,0,0.04)', // Hiệu ứng hover
+            backgroundColor: 'rgba(0,0,0,0.04)',
         },
         whiteSpace: 'nowrap', // Ngăn văn bản xuống dòng
         overflow: 'hidden',
@@ -129,7 +129,7 @@ function SideBar({ sidebarOpen }) {
                             display: 'flex',
                             flexDirection: 'column',
                             justifyContent: 'space-between',
-                            width: 100,
+                            width: 150,
                             p: 1,
                             mb: 10,
                             px: 2,
@@ -137,7 +137,6 @@ function SideBar({ sidebarOpen }) {
                             fontSize: '12px',
                             textAlign: 'center',
                             pb: 2,
-                            whiteSpace: 'nowrap',
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
                         }}

@@ -60,7 +60,7 @@ function RoutesConfig() {
     const HelpOutlet = () => <div>Trợ giúp</div>;
     const FeedbackOutlet = () => <div>Ý kiến phản hồi</div>;
 
-
+    
 
 
 
@@ -140,33 +140,10 @@ function RoutesConfig() {
     return (
         <Routes>
             <Route path="/home" element={<ShowUserLayout />}>
-                {/* Route con cho trang chính với sidebar */}
+                {/*// Route con cho trang chính với sidebar*/}
                 <Route index element={<UserContentHomeOutlet />} />
                 <Route path="user-profile" element={<UserProfileOutlet />} />
                 <Route path="user-post" element={<UserPostOutlet />} />
-                <Route path="shorts" element={<ShortsOutlet />} />
-                <Route path="subscriptions" element={<SubscriptionsOutlet />} />
-                <Route path="history" element={<HistoryOutlet />} />
-                <Route path="liked-videos" element={<LikedVideosOutlet />} />
-                <Route path="playlists" element={<PlaylistsOutlet />} />
-                <Route path="watch-later" element={<WatchLaterOutlet />} />
-                <Route path="your-videos" element={<YourVideosOutlet />} />
-                <Route path="movies" element={<MoviesOutlet />} />
-                <Route path="anime" element={<AnimeOutlet />} />
-                <Route path="music" element={<MusicOutlet />} />
-                <Route path="tech" element={<TechOutlet />} />
-                <Route path="gaming" element={<GamingOutlet />} />
-                <Route path="education" element={<EducationOutlet />} />
-                <Route path="food" element={<FoodOutlet />} />
-                <Route path="travel" element={<TravelOutlet />} />
-                <Route path="sports" element={<SportsOutlet />} />
-                <Route path="beauty" element={<BeautyOutlet />} />
-                <Route path="finance" element={<FinanceOutlet />} />
-                <Route path="lifestyle" element={<LifestyleOutlet />} />
-                <Route path="settings" element={<SettingsOutlet />} />
-                <Route path="report-log" element={<ReportLogOutlet />} />
-                <Route path="help" element={<HelpOutlet />} />
-                <Route path="feedback" element={<FeedbackOutlet />} />
             </Route>
 
             <Route path="/management-profile" element={<ShowUserManagementLayout />}>

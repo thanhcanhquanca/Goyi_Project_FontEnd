@@ -18,11 +18,11 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import TuneIcon from "@mui/icons-material/Tune";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import CopyrightIcon from "@mui/icons-material/Copyright";
-import VideoLibraryIcon from '@mui/icons-material/VideoLibrary';
+import HelpIcon from "@mui/icons-material/Help";
 
 const NAVIGATION = [
     { segment: 'dashboard', title: 'Tổng quan', icon: <DashboardIcon /> },
-    { segment: 'orders', title: 'Nội dung', icon: <VideoLibraryIcon /> },
+    { segment: 'orders', title: 'Nội dung', icon: <ShoppingCartIcon /> },
     { kind: 'divider' },
     { segment: 'reports', title: 'Phân tích', icon: <BarChartIcon /> },
     { segment: 'integrations', title: 'Phụ đề', icon: <LayersIcon /> },

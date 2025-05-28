@@ -11,6 +11,8 @@ import LoginIcon from '@mui/icons-material/Login';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import React, { useState } from 'react';
+import FeedbackIcon from "@mui/icons-material/Feedback";
+import HelpIcon from "@mui/icons-material/Help";
 
 function ManagementHeader({ sidebarOpen, toggleSidebar }) {
     const [anchorEl, setAnchorEl] = useState(null);
@@ -115,6 +117,7 @@ function ManagementHeader({ sidebarOpen, toggleSidebar }) {
                 </Box>
 
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
+
                     <IconButton
                         sx={{
                             borderRadius: 5,

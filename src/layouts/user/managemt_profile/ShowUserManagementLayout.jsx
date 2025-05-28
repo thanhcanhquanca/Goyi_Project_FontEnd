@@ -7,6 +7,9 @@ import React, { useState } from 'react';
 function ShowUserManagementLayout() {
     const [sidebarOpen, setSidebarOpen] = useState(true);
 
+    // Tính toán chiều rộng sidebar dựa trên trạng thái sidebarOpen
+    const sidebarWidth = sidebarOpen ? 250 : 60;
+
     const toggleSidebar = () => {
         setSidebarOpen((prev) => !prev);
     };
@@ -15,11 +18,11 @@ function ShowUserManagementLayout() {
         <Box
             sx={{
                 flexGrow: 1,
-                overflow: 'hidden', // Tắt cuộn hoàn toàn
+                overflow: 'hidden',
                 display: 'flex',
                 flexDirection: 'column',
-                height: '100vh', // Đảm bảo chiều cao bằng viewport
-                width: '100vw', // Đảm bảo chiều rộng bằng viewport
+                height: '100vh',
+                width: '100vw',
             }}
         >
             {/* Header */}
@@ -36,8 +39,8 @@ function ShowUserManagementLayout() {
                     width: '100vw',
                 }}
             >
-                <ManagementSidebar sidebarOpen={sidebarOpen} />
-                <ManagementContent sidebarOpen={sidebarOpen} />
+                <ManagementSidebar sidebarWidth={sidebarWidth} /> {/* Truyền sidebarWidth */}
+                <ManagementContent sidebarWidth={sidebarWidth} /> {/* Truyền sidebarWidth */}
             </Box>
         </Box>
     );
