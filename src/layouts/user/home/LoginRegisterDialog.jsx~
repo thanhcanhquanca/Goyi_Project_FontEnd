@@ -1,52 +1,51 @@
 import React, { useState } from 'react';
-import { Box, Dialog, Grid, Typography, TextField, Button, InputAdornment, IconButton } from '@mui/material';
+import { Box, Dialog, Grid, Typography, TextField, Button, InputAdornment, IconButton, Snackbar, Alert } from '@mui/material';
 import { MuiTelInput } from 'mui-tel-input';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { parsePhoneNumber } from 'libphonenumber-js';
+import * as Yup from 'yup'; // Import Yup
+import { parsePhoneNumber } from 'libphonenumber-js'; // Import parsePhoneNumber
 import AuthService from '../../../services/authService.js';
-import { toast } from 'react-toastify'; // Import toast from react-toastify
 
 // Helper function to normalize phone number by removing country code
 const normalizePhoneNumber = (phone) => {
     try {
         const phoneNumber = parsePhoneNumber(phone || '');
         if (phoneNumber && phoneNumber.isValid()) {
+            // Return the national number without the country code
             return phoneNumber.nationalNumber;
         }
-        return phone;
+        return phone; // Return as-is if parsing fails
     } catch {
-        return phone;
+        return phone; // Return as-is if an error occurs
     }
 };
-
-// Yup validation schema for phone number
-const phoneValidationSchema = Yup.string()
-    .required('Bắt buộc')
-    .test('valid-phone', 'Số điện thoại không hợp lệ', (value) => {
-        try {
-            const phoneNumber = parsePhoneNumber(value || '');
-            return phoneNumber.isValid();
-        } catch {
-            return false;
-        }
-    });
-
-// Custom password validation
-const passwordValidationSchema = Yup.string()
-    .required('Mật khẩu là bắt buộc')
-    .min(6, 'Mật khẩu phải có ít nhất 6 ký tự')
-    .matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/, 'Mật khẩu phải chứa cả chữ và số');
 
 const LoginRegisterDialog = ({ open, onClose, tabValue, handleTabChange }) => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: '',
+        severity: 'success',
+    });
 
     const handleClickShowPassword = () => setShowPassword(!showPassword);
     const handleClickShowConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
+
+    // Yup validation schema for phone number
+    const phoneValidationSchema = Yup.string()
+        .required('Bắt buộc')
+        .test('valid-phone', 'Số điện thoại không hợp lệ', (value) => {
+            try {
+                const phoneNumber = parsePhoneNumber(value || '');
+                return phoneNumber.isValid();
+            } catch {
+                return false;
+            }
+        });
 
     // Đăng ký
     const registerFormik = useFormik({
@@ -57,23 +56,33 @@ const LoginRegisterDialog = ({ open, onClose, tabValue, handleTabChange }) => {
         },
         validationSchema: Yup.object({
             phone: phoneValidationSchema,
-            password: passwordValidationSchema,
+            password: Yup.string().required('Mật khẩu là bắt buộc'),
             confirmPassword: Yup.string()
                 .required('Xác nhận mật khẩu là bắt buộc')
                 .oneOf([Yup.ref('password'), null], 'Mật khẩu xác nhận không khớp'),
         }),
         onSubmit: async (values, { setSubmitting, setErrors }) => {
             try {
+                // Normalize the phone number (remove country code)
                 const normalizedPhone = normalizePhoneNumber(values.phone);
+
                 const userData = {
-                    phoneNumber: normalizedPhone,
+                    phoneNumber: normalizedPhone, // Store only the national number
                     password: values.password,
                 };
                 const response = await AuthService.register(userData);
-                toast.success(response.message || 'Đăng ký thành công!'); // Success toast
+                setSnackbar({
+                    open: true,
+                    message: response.message || 'Đăng ký thành công!',
+                    severity: 'success',
+                });
                 onClose();
             } catch (error) {
-                toast.error(error.error || 'Đăng ký thất bại. Vui lòng thử lại.'); // Error toast
+                setSnackbar({
+                    open: true,
+                    message: error.error || 'Đăng ký thất bại. Vui lòng thử lại.',
+                    severity: 'error',
+                });
                 setErrors({ phone: error.error || 'Đăng ký thất bại, vui lòng thử lại' });
                 console.error('Register error:', error);
             }
@@ -89,16 +98,26 @@ const LoginRegisterDialog = ({ open, onClose, tabValue, handleTabChange }) => {
         },
         validationSchema: Yup.object({
             phoneNumber: phoneValidationSchema,
-            password: passwordValidationSchema, // Updated password validation
+            password: Yup.string().required('Mật khẩu là bắt buộc'),
         }),
         onSubmit: async (values, { setSubmitting, setErrors }) => {
             try {
+                // Normalize the phone number (remove country code)
                 const normalizedPhone = normalizePhoneNumber(values.phoneNumber);
+
                 const response = await AuthService.login(normalizedPhone, values.password);
-                toast.success(response.message || 'Đăng nhập thành công!'); // Success toast
+                setSnackbar({
+                    open: true,
+                    message: response.message || 'Đăng nhập thành công!',
+                    severity: 'success',
+                });
                 onClose();
             } catch (error) {
-                toast.error(error.error || 'Đăng nhập thất bại. Vui lòng kiểm tra số điện thoại hoặc mật khẩu.'); // Error toast
+                setSnackbar({
+                    open: true,
+                    message: error.error || 'Đăng nhập thất bại. Vui lòng kiểm tra số điện thoại hoặc mật khẩu.',
+                    severity: 'error',
+                });
                 setErrors({ phoneNumber: error.error || 'Số điện thoại hoặc mật khẩu không đúng' });
                 console.error('Login error:', error);
             }
@@ -576,6 +595,21 @@ const LoginRegisterDialog = ({ open, onClose, tabValue, handleTabChange }) => {
                         </Grid>
                     </Grid>
                 </Box>
+
+                <Snackbar
+                    open={snackbar.open}
+                    autoHideDuration={6000}
+                    onClose={() => setSnackbar({ ...snackbar, open: false })}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                >
+                    <Alert
+                        onClose={() => setSnackbar({ ...snackbar, open: false })}
+                        severity={snackbar.severity}
+                        sx={{ width: '100%' }}
+                    >
+                        {snackbar.message}
+                    </Alert>
+                </Snackbar>
             </Box>
         </Dialog>
     );

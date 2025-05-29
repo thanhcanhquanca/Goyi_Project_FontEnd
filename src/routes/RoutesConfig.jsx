@@ -137,10 +137,38 @@ function RoutesConfig() {
         </Box>
     );
 
+
+
+
+
+// management-admin
+
+    const ShowAdminLayout = () => (
+        <Box>
+            <Typography variant="h4">admin</Typography>
+            <Typography>Đây là trang admin</Typography>
+        </Box>
+    );
+
+    const AdminContent = () => (
+        <Box>
+            <Typography variant="h4">AdminUserContent</Typography>
+            <Typography>Đây là trang AdminUserContent</Typography>
+        </Box>
+    );
+
+    const AdminSideBar = () => (
+        <Box>
+            <Typography variant="h4">AdminUserContent</Typography>
+            <Typography>Đây là trang AdminUserContent</Typography>
+        </Box>
+    );
+
+
     return (
         <Routes>
             <Route path="/home" element={<ShowUserLayout />}>
-                {/* Route con cho trang chính với sidebar */}
+                {/* Route con users */}
                 <Route index element={<UserContentHomeOutlet />} />
                 <Route path="user-profile" element={<UserProfileOutlet />} />
                 <Route path="user-post" element={<UserPostOutlet />} />
@@ -169,6 +197,7 @@ function RoutesConfig() {
                 <Route path="feedback" element={<FeedbackOutlet />} />
             </Route>
 
+            {/* Route con management-users-profile */}
             <Route path="/management-profile" element={<ShowUserManagementLayout />}>
                 <Route path="dashboard" element={<DashboardContent />} />
                 <Route path="orders" element={<OrdersContent />} />
@@ -181,6 +210,13 @@ function RoutesConfig() {
                 <Route path="settings" element={<SettingsContent />} />
                 <Route index element={<DashboardContent />} /> {/* Route mặc định */}
             </Route>
+
+            {/* Route con admin */}
+            <Route path="/management-admin" element={<ShowAdminLayout />}>
+                <Route path="sidebar" element={<AdminSideBar />} />
+                <Route index element={<AdminContent />} /> {/* Route mặc định */}
+            </Route>
+
         </Routes>
     );
 }

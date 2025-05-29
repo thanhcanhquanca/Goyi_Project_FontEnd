@@ -1,8 +1,16 @@
 import React from "react";
-import Box from "@mui/material/Box";
-import { Button, Divider, Paper, Typography } from "@mui/material";
+import {
+    Box,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    Divider,
+    Paper,
+    Typography,
+    Tooltip,
+} from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
-import MovieIcon from "@mui/icons-material/Movie";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 import SubscriptionsIcon from "@mui/icons-material/Subscriptions";
 import HistoryIcon from "@mui/icons-material/History";
@@ -14,6 +22,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import HelpIcon from "@mui/icons-material/Help";
 import FeedbackIcon from "@mui/icons-material/Feedback";
 import ReportIcon from "@mui/icons-material/Report";
+import MovieIcon from "@mui/icons-material/Movie";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import SchoolIcon from "@mui/icons-material/School";
@@ -23,315 +32,189 @@ import SportsIcon from "@mui/icons-material/Sports";
 import FaceIcon from "@mui/icons-material/Face";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import Diversity3Icon from "@mui/icons-material/Diversity3";
-import FeedIcon from '@mui/icons-material/Feed';
-import { useNavigate, useLocation } from 'react-router-dom';
+import MovieFilterIcon from "@mui/icons-material/MovieFilter";
+import { useNavigate, useLocation } from "react-router-dom";
+
+// Define the NAVIGATION array
+const NAVIGATION = [
+    { segment: "", title: "Trang chủ", icon: <HomeIcon /> },
+    { segment: "shorts", title: "Short", icon: <OndemandVideoIcon /> },
+    { segment: "subscriptions", title: "Kênh đăng ký", icon: <SubscriptionsIcon /> },
+    { segment: "user-post", title: "Bài Đăng", icon: <VideoLibraryIcon /> },
+    { section: "Bạn" },
+    { segment: "history", title: "Video đã xem", icon: <HistoryIcon /> },
+    { segment: "liked-videos", title: "Video đã thích", icon: <ThumbUpIcon /> },
+    { segment: "playlists", title: "Danh sách phát", icon: <PlaylistPlayIcon /> },
+    { segment: "watch-later", title: "Xem sau", icon: <WatchLaterIcon /> },
+    { segment: "your-videos", title: "Video của bạn", icon: <VideoLibraryIcon /> },
+    { section: "Kênh nội dung" },
+    { segment: "movies", title: "Phim & Truyền hình", icon: <MovieFilterIcon /> },
+    { segment: "anime", title: "Anime & Manga", icon: <MovieIcon /> },
+    { segment: "music", title: "Âm nhạc", icon: <MusicNoteIcon /> },
+    { segment: "tech", title: "Công nghệ", icon: <VideoLibraryIcon /> },
+    { segment: "gaming", title: "Trò chơi", icon: <SportsEsportsIcon /> },
+    { segment: "education", title: "Giáo dục & Học tập", icon: <SchoolIcon /> },
+    { segment: "food", title: "Ẩm thực & Nấu ăn", icon: <FastfoodIcon /> },
+    { segment: "travel", title: "Du lịch & Văn hóa", icon: <TravelExploreIcon /> },
+    { segment: "sports", title: "Thể thao", icon: <SportsIcon /> },
+    { segment: "beauty", title: "Làm đẹp & Thời trang", icon: <FaceIcon /> },
+    { segment: "finance", title: "Tài chính & Đầu tư", icon: <MonetizationOnIcon /> },
+    { segment: "lifestyle", title: "Xã hội & Đời sống", icon: <Diversity3Icon /> },
+    { section: "Khác" },
+    { segment: "settings", title: "Cài đặt", icon: <SettingsIcon /> },
+    { segment: "report-log", title: "Nhật ký báo cáo", icon: <ReportIcon /> },
+    { segment: "help", title: "Trợ giúp", icon: <HelpIcon /> },
+    { segment: "feedback", title: "Ý kiến phản hồi", icon: <FeedbackIcon /> },
+];
 
 function SideBar({ sidebarOpen }) {
-    const buttonStyle = {
-        justifyContent: "flex-start",
-        mb: 1,
-        color: "black",
-        fontSize: "14px",
-        textTransform: "none",
-        height: "48px",
-        minHeight: "48px",
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', // Hiệu ứng mượt mà cho tất cả thay đổi
-        '& .MuiButton-startIcon': {
-            minWidth: '48px',
-            fontSize: '28px',
-            color: '#444',
-            mr: 1,
-            transition: 'color 0.3s cubic-bezier(0.4, 0, 0.2, 1)', // Hiệu ứng màu icon
-        },
-        '&:hover': {
-            backgroundColor: 'rgba(0,0,0,0.06)',
-            color: '#000', // Đậm hơn khi hover
-            '& .MuiButton-startIcon': {
-                color: '#000', // Icon sáng hơn khi hover
-            },
-        },
-        whiteSpace: 'nowrap',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        '&.active': {
-            backgroundColor: 'rgba(0, 0, 0, 0.1)', // Màu nền khi active
-            color: '#000', // Làm đậm màu text
-            fontWeight: 'bold', // Làm đậm text
-            boxShadow: 'inset 3px 0 0 #1976d2', // Thêm viền bên trái màu xanh để nổi bật
-            '& .MuiButton-startIcon': {
-                color: '#1976d2', // Icon sáng lên với màu xanh
-            },
-        },
-    };
-
     const navigate = useNavigate();
     const location = useLocation();
 
-    const handleNavigation = (path) => {
-        navigate(path);
+    // Handle navigation on item click
+    const handleItemClick = (segment) => {
+        navigate(`/home${segment ? `/${segment}` : ""}`);
     };
 
     return (
         <Box
             sx={{
-                width: sidebarOpen ? '13%' : '0%',
-                minWidth: sidebarOpen ? '200px' : '0px',
-                backgroundColor: '#f0f0f0',
-                height: '100vh',
-                overflowY: 'auto',
-                transition: 'width 0.4s cubic-bezier(0.4, 0, 0.2, 1), min-width 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                transform: sidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
-                willChange: 'width, transform',
-                '&::-webkit-scrollbar': { width: '6px', display: 'none', height: '30px' },
-                '&::-webkit-scrollbar-thumb': { backgroundColor: '#888', borderRadius: '4px' },
-                '&::-webkit-scrollbar-thumb:hover': { backgroundColor: '#555' },
-                scrollbarWidth: 'none',
-                '&:hover': {
-                    '&::-webkit-scrollbar': { display: sidebarOpen ? 'block' : 'none' },
-                    scrollbarWidth: sidebarOpen ? 'thin' : 'none',
-                    scrollbarColor: sidebarOpen ? '#888 #f0f0f0' : 'transparent',
+                width: sidebarOpen ? "13%" : "0%",
+                minWidth: sidebarOpen ? "180px" : "0px",
+                backgroundColor: "#f0f0f0",
+                height: "100vh",
+                overflowY: "auto",
+                transition: "width 0.3s ease-in-out, min-width 0.3s ease-in-out",
+                "&::-webkit-scrollbar": { width: "6px", display: "none" },
+                "&::-webkit-scrollbar-thumb": { backgroundColor: "#888", borderRadius: "4px" },
+                "&::-webkit-scrollbar-thumb:hover": { backgroundColor: "#555" },
+                scrollbarWidth: "none",
+                "&:hover": {
+                    "&::-webkit-scrollbar": { display: sidebarOpen ? "block" : "none" },
+                    scrollbarWidth: sidebarOpen ? "thin" : "none",
+                    scrollbarColor: sidebarOpen ? "#888 #f0f0f0" : "transparent",
                 },
             }}
         >
             {sidebarOpen && (
-                <Paper sx={{ minHeight: '100%', display: 'flex', flexDirection: 'column', p: 1 }}>
-                    <Button
-                        fullWidth
-                        startIcon={<HomeIcon />}
-                        sx={{ ...buttonStyle, ...(location.pathname === '/home' && { className: 'active' }) }}
-                        onClick={() => handleNavigation('/home')}
-                    >
-                        Trang chủ
-                    </Button>
-                    <Button
-                        fullWidth
-                        startIcon={<OndemandVideoIcon />}
-                        sx={{ ...buttonStyle, ...(location.pathname === '/home/shorts' && { className: 'active' }) }}
-                        onClick={() => handleNavigation('/home/shorts')}
-                    >
-                        Short
-                    </Button>
-                    <Button
-                        fullWidth
-                        startIcon={<SubscriptionsIcon />}
-                        sx={{ ...buttonStyle, ...(location.pathname === '/home/subscriptions' && { className: 'active' }) }}
-                        onClick={() => handleNavigation('/home/subscriptions')}
-                    >
-                        Kênh đăng ký
-                    </Button>
-                    <Button
-                        fullWidth
-                        startIcon={<FeedIcon />}
-                        sx={{ ...buttonStyle, ...(location.pathname === '/home/user-post' && { className: 'active' }) }}
-                        onClick={() => handleNavigation('/home/user-post')}
-                    >
-                        Bài Đăng
-                    </Button>
+                <Paper sx={{ minHeight: "100%", display: "flex", flexDirection: "column", p: 1 }}>
+                    <List>
+                        {NAVIGATION.map((item, index) => {
+                            if (item.section) {
+                                return (
+                                    <React.Fragment key={index}>
+                                        <Divider sx={{ my: 1 }} />
+                                        <Typography
+                                            variant="subtitle2"
+                                            sx={{ px: 2, py: 1, fontSize: 14 }}
+                                        >
+                                            {item.section}
+                                        </Typography>
+                                    </React.Fragment>
+                                );
+                            }
 
-                    <Divider sx={{ my: 1 }} />
-                    <Typography variant="subtitle2" sx={{ px: 1, mb: 1 }}>Bạn</Typography>
-                    <Button
-                        fullWidth
-                        startIcon={<HistoryIcon />}
-                        sx={{ ...buttonStyle, ...(location.pathname === '/home/history' && { className: 'active' }) }}
-                        onClick={() => handleNavigation('/home/history')}
-                    >
-                        Video đã xem
-                    </Button>
-                    <Button
-                        fullWidth
-                        startIcon={<ThumbUpIcon />}
-                        sx={{ ...buttonStyle, ...(location.pathname === '/home/liked-videos' && { className: 'active' }) }}
-                        onClick={() => handleNavigation('/home/liked-videos')}
-                    >
-                        Video đã thích
-                    </Button>
-                    <Button
-                        fullWidth
-                        startIcon={<PlaylistPlayIcon />}
-                        sx={{ ...buttonStyle, ...(location.pathname === '/home/playlists' && { className: 'active' }) }}
-                        onClick={() => handleNavigation('/home/playlists')}
-                    >
-                        Danh sách phát
-                    </Button>
-                    <Button
-                        fullWidth
-                        startIcon={<WatchLaterIcon />}
-                        sx={{ ...buttonStyle, ...(location.pathname === '/home/watch-later' && { className: 'active' }) }}
-                        onClick={() => handleNavigation('/home/watch-later')}
-                    >
-                        Xem sau
-                    </Button>
-                    <Button
-                        fullWidth
-                        startIcon={<VideoLibraryIcon />}
-                        sx={{ ...buttonStyle, ...(location.pathname === '/home/your-videos' && { className: 'active' }) }}
-                        onClick={() => handleNavigation('/home/your-videos')}
-                    >
-                        Video của bạn
-                    </Button>
+                            const isActive =
+                                location.pathname ===
+                                `/home${item.segment ? `/${item.segment}` : ""}`;
 
-                    <Divider sx={{ my: 1 }} />
-                    <Typography variant="subtitle2" sx={{ px: 1, mb: 1 }}>Kênh nội dung</Typography>
-                    <Button
-                        fullWidth
-                        startIcon={<MovieIcon />}
-                        sx={{ ...buttonStyle, ...(location.pathname === '/home/movies' && { className: 'active' }) }}
-                        onClick={() => handleNavigation('/home/movies')}
-                    >
-                        Phim & Truyền hình
-                    </Button>
-                    <Button
-                        fullWidth
-                        startIcon={<MovieIcon />}
-                        sx={{ ...buttonStyle, ...(location.pathname === '/home/anime' && { className: 'active' }) }}
-                        onClick={() => handleNavigation('/home/anime')}
-                    >
-                        Anime & Manga
-                    </Button>
-                    <Button
-                        fullWidth
-                        startIcon={<MusicNoteIcon />}
-                        sx={{ ...buttonStyle, ...(location.pathname === '/home/music' && { className: 'active' }) }}
-                        onClick={() => handleNavigation('/home/music')}
-                    >
-                        Âm nhạc
-                    </Button>
-                    <Button
-                        fullWidth
-                        startIcon={<VideoLibraryIcon />}
-                        sx={{ ...buttonStyle, ...(location.pathname === '/home/tech' && { className: 'active' }) }}
-                        onClick={() => handleNavigation('/home/tech')}
-                    >
-                        Công nghệ
-                    </Button>
-                    <Button
-                        fullWidth
-                        startIcon={<SportsEsportsIcon />}
-                        sx={{ ...buttonStyle, ...(location.pathname === '/home/gaming' && { className: 'active' }) }}
-                        onClick={() => handleNavigation('/home/gaming')}
-                    >
-                        Trò chơi
-                    </Button>
-                    <Button
-                        fullWidth
-                        startIcon={<SchoolIcon />}
-                        sx={{ ...buttonStyle, ...(location.pathname === '/home/education' && { className: 'active' }) }}
-                        onClick={() => handleNavigation('/home/education')}
-                    >
-                        Giáo dục & Học tập
-                    </Button>
-                    <Button
-                        fullWidth
-                        startIcon={<FastfoodIcon />}
-                        sx={{ ...buttonStyle, ...(location.pathname === '/home/food' && { className: 'active' }) }}
-                        onClick={() => handleNavigation('/home/food')}
-                    >
-                        Ẩm thực & Nấu ăn
-                    </Button>
-                    <Button
-                        fullWidth
-                        startIcon={<TravelExploreIcon />}
-                        sx={{ ...buttonStyle, ...(location.pathname === '/home/travel' && { className: 'active' }) }}
-                        onClick={() => handleNavigation('/home/travel')}
-                    >
-                        Du lịch & Văn hóa
-                    </Button>
-                    <Button
-                        fullWidth
-                        startIcon={<SportsIcon />}
-                        sx={{ ...buttonStyle, ...(location.pathname === '/home/sports' && { className: 'active' }) }}
-                        onClick={() => handleNavigation('/home/sports')}
-                    >
-                        Thể thao
-                    </Button>
-                    <Button
-                        fullWidth
-                        startIcon={<FaceIcon />}
-                        sx={{ ...buttonStyle, ...(location.pathname === '/home/beauty' && { className: 'active' }) }}
-                        onClick={() => handleNavigation('/home/beauty')}
-                    >
-                        Làm đẹp & Thời trang
-                    </Button>
-                    <Button
-                        fullWidth
-                        startIcon={<MonetizationOnIcon />}
-                        sx={{ ...buttonStyle, ...(location.pathname === '/home/finance' && { className: 'active' }) }}
-                        onClick={() => handleNavigation('/home/finance')}
-                    >
-                        Tài chính & Đầu tư
-                    </Button>
-                    <Button
-                        fullWidth
-                        startIcon={<Diversity3Icon />}
-                        sx={{ ...buttonStyle, ...(location.pathname === '/home/lifestyle' && { className: 'active' }) }}
-                        onClick={() => handleNavigation('/home/lifestyle')}
-                    >
-                        Xã hội & Đời sống
-                    </Button>
+                            return (
+                                <Tooltip
+                                    key={index}
+                                    title={item.title}
+                                    placement="right"
+                                    arrow
+                                    disableHoverListener={sidebarOpen}
+                                >
+                                    <ListItem
+                                        button
+                                        onClick={() => handleItemClick(item.segment)}
+                                        sx={{
+                                            display: "flex",
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            py: 1,
+                                            pl: 2,
+                                            justifyContent: "flex-start",
+                                            transition: "all 0.2s ease-in-out",
+                                            backgroundColor: isActive
+                                                ? "#e0e0e0" // Light gray for active state
+                                                : "transparent",
+                                            color: isActive ? "#000" : "",
+                                            "&:hover": {
+                                                backgroundColor: isActive
+                                                    ? "#e0e0e0" // Keep light gray on hover when active
+                                                    : "rgba(0,0,0,0.04)",
+                                                "& .MuiListItemIcon-root": {
+                                                    transform: "scale(1.1)",
+                                                    color: isActive ? "#000" : "#202020",
+                                                    "& svg": {
+                                                        filter: isActive
+                                                            ? "drop-shadow(0 0 6px rgba(0,0,0,0.2))"
+                                                            : "drop-shadow(0 0 4px rgba(25,118,210,0.5))",
+                                                    },
+                                                },
+                                            },
+                                        }}
+                                    >
+                                        <ListItemIcon
+                                            sx={{
+                                                minWidth: "32px",
+                                                color: isActive ? "#000" : "#444",
+                                                transition:
+                                                    "transform 0.2s ease-in-out, color 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
+                                                "& svg": {
+                                                    filter: isActive
+                                                        ? "drop-shadow(0 0 6px rgba(0,0,0,0.2))"
+                                                        : "drop-shadow(0 0 2px rgba(0,0,0,0.2))",
+                                                },
+                                            }}
+                                        >
+                                            {item.icon}
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={item.title}
+                                            primaryTypographyProps={{
+                                                fontSize: 14,
+                                                fontWeight: isActive ? "bold" : "normal",
+                                                whiteSpace: "nowrap",
+                                                overflow: "hidden",
+                                                textOverflow: "ellipsis",
+                                            }}
+                                            sx={{
+                                                color: isActive ? "#000" : "black",
+                                            }}
+                                        />
+                                    </ListItem>
+                                </Tooltip>
+                            );
+                        })}
+                    </List>
 
+                    {/* Copyright information */}
                     <Divider sx={{ my: 1 }} />
-                    <Typography variant="subtitle2" sx={{ px: 1, mb: 1 }}>Khác</Typography>
-                    <Button
-                        fullWidth
-                        startIcon={<SettingsIcon />}
-                        sx={{ ...buttonStyle, ...(location.pathname === '/home/settings' && { className: 'active' }) }}
-                        onClick={() => handleNavigation('/home/settings')}
-                    >
-                        Cài đặt
-                    </Button>
-                    <Button
-                        fullWidth
-                        startIcon={<ReportIcon />}
-                        sx={{ ...buttonStyle, ...(location.pathname === '/home/report-log' && { className: 'active' }) }}
-                        onClick={() => handleNavigation('/home/report-log')}
-                    >
-                        Nhật ký báo cáo
-                    </Button>
-                    <Button
-                        fullWidth
-                        startIcon={<HelpIcon />}
-                        sx={{ ...buttonStyle, ...(location.pathname === '/home/help' && { className: 'active' }) }}
-                        onClick={() => handleNavigation('/home/help')}
-                    >
-                        Trợ giúp
-                    </Button>
-                    <Button
-                        fullWidth
-                        startIcon={<FeedbackIcon />}
-                        sx={{ ...buttonStyle, ...(location.pathname === '/home/feedback' && { className: 'active' }) }}
-                        onClick={() => handleNavigation('/home/feedback')}
-                    >
-                        Ý kiến phản hồi
-                    </Button>
-
-                    <Divider sx={{ my: 1 }} />
-                    <Typography variant="subtitle2" sx={{ px: 1, mb: 1 }}>Thông tin bản quyền</Typography>
+                    <Typography variant="subtitle2" sx={{ px: 2, py: 1, fontSize: 14 }}>
+                        Thông tin bản quyền
+                    </Typography>
                     <Typography
                         variant="caption"
                         sx={{
-                            minHeight: '100%',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'space-between',
-                            width: 150,
-                            p: 1,
-                            mb: 10,
                             px: 2,
-                            color: '#777',
-                            fontSize: '12px',
-                            textAlign: 'center',
-                            pb: 2,
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
+                            py: 1,
+                            color: "#777",
+                            fontSize: 12,
+                            textAlign: "center",
+                            overflow: "hidden",
+                            mb: "170px",
+                            textOverflow: "ellipsis",
                         }}
                     >
-                        © 2025 Goyi Corporation - Công ty Công nghệ Sáng tạo Toàn cầu.
-                        Mọi quyền sở hữu trí tuệ, bao gồm nhưng không giới hạn ở nội dung,
-                        thiết kế và mã nguồn, đều được bảo lưu toàn cầu. Địa chỉ trụ sở chính:
-                        Tòa nhà Goyi Tower, Số 123 Đường Sáng Tạo, Quận 1, Thành phố Hồ Chí Minh,
-                        Việt Nam. Vui lòng liên hệ qua email support@goyi.com để được hỗ trợ hoặc khiếu nại.
-                        Chúng tôi cam kết mang đến trải nghiệm tốt nhất cho người dùng với sự đổi mới không ngừng.
+                        © 2025 Goyi Corporation - Công ty Công nghệ Sáng tạo Toàn cầu. Mọi quyền sở hữu trí
+                        tuệ, bao gồm nhưng không giới hạn ở nội dung, thiết kế và mã nguồn, đều được bảo lưu
+                        toàn cầu. Địa chỉ trụ sở chính: Tòa nhà Goyi Tower, Số 123 Đường Sáng Tạo, Quận 1,
+                        Thành phố Hồ Chí Minh, Việt Nam. Vui lòng liên hệ qua email support@goyi.com để được
+                        hỗ trợ hoặc khiếu nại. Chúng tôi cam kết mang đến trải nghiệm tốt nhất cho người dùng
+                        với sự đổi mới không ngừng.
                     </Typography>
                 </Paper>
             )}

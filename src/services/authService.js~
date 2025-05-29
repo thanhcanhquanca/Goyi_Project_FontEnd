@@ -3,7 +3,7 @@ import axiosConfig from "../configs/axios.config.js";
 class AuthService{
     static async register(userData) {
         try {
-            const response = await axiosConfig.post('/api/auth/register', userData);
+            const response = await axiosConfig.post('http://localhost:8080/api/auth/register', userData);
             return response.data;
         } catch (error) {
             throw error.response?.data || { error: 'Đăng ký thất bại' };
