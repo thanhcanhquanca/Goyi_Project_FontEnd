@@ -176,8 +176,10 @@ function ManagementHeader({ sidebarOpen, toggleSidebar }) {
                     anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                     transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                 >
-                    <MenuItem onClick={handleClickHome}>
-                        <ListItemIcon>
+                    <MenuItem>
+                        <ListItemIcon
+                            onClick={handleClickHome}
+                        >
                             <LoginIcon fontSize='small' />
                         </ListItemIcon>
                         Goyi Home

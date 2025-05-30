@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,  } from 'react';
 import { Box, Dialog, Grid, Typography, TextField, Button, InputAdornment, IconButton } from '@mui/material';
 import { MuiTelInput } from 'mui-tel-input';
 import Visibility from '@mui/icons-material/Visibility';
@@ -8,7 +8,8 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { parsePhoneNumber } from 'libphonenumber-js';
 import AuthService from '../../../services/authService.js';
-import { toast } from 'react-toastify'; // Import toast from react-toastify
+import { toast } from 'react-toastify';
+import { useNavigate } from "react-router";
 
 // Helper function to normalize phone number by removing country code
 const normalizePhoneNumber = (phone) => {
@@ -44,6 +45,8 @@ const passwordValidationSchema = Yup.string()
 const LoginRegisterDialog = ({ open, onClose, tabValue, handleTabChange }) => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const navigate = useNavigate(); // Khởi tạo useNavigate để điều hướng
+
 
     const handleClickShowPassword = () => setShowPassword(!showPassword);
     const handleClickShowConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
@@ -62,7 +65,7 @@ const LoginRegisterDialog = ({ open, onClose, tabValue, handleTabChange }) => {
                 .required('Xác nhận mật khẩu là bắt buộc')
                 .oneOf([Yup.ref('password'), null], 'Mật khẩu xác nhận không khớp'),
         }),
-        onSubmit: async (values, { setSubmitting, setErrors }) => {
+        onSubmit: async (values, { setSubmitting, setErrors, resetForm }) => {
             try {
                 const normalizedPhone = normalizePhoneNumber(values.phone);
                 const userData = {
@@ -70,10 +73,11 @@ const LoginRegisterDialog = ({ open, onClose, tabValue, handleTabChange }) => {
                     password: values.password,
                 };
                 const response = await AuthService.register(userData);
-                toast.success(response.message || 'Đăng ký thành công!'); // Success toast
+                toast.success(response.message || 'Đăng ký thành công!');
+                resetForm(); // Xóa dữ liệu trong các ô nhập liệu
                 onClose();
             } catch (error) {
-                toast.error(error.error || 'Đăng ký thất bại. Vui lòng thử lại.'); // Error toast
+                toast.error(error.error || 'Đăng ký thất bại. Vui lòng thử lại.');
                 setErrors({ phone: error.error || 'Đăng ký thất bại, vui lòng thử lại' });
                 console.error('Register error:', error);
             }
@@ -89,22 +93,37 @@ const LoginRegisterDialog = ({ open, onClose, tabValue, handleTabChange }) => {
         },
         validationSchema: Yup.object({
             phoneNumber: phoneValidationSchema,
-            password: passwordValidationSchema, // Updated password validation
+            password: passwordValidationSchema,
         }),
-        onSubmit: async (values, { setSubmitting, setErrors }) => {
+        onSubmit: async (values, { setSubmitting, setErrors, resetForm }) => {
             try {
                 const normalizedPhone = normalizePhoneNumber(values.phoneNumber);
                 const response = await AuthService.login(normalizedPhone, values.password);
-                toast.success(response.message || 'Đăng nhập thành công!'); // Success toast
-                onClose();
+
+                // Kiểm tra và lưu toàn bộ thông tin người dùng vào localStorage
+                if (response.token) {
+                    localStorage.setItem('user', JSON.stringify(response)); // Lưu toàn bộ response
+                    localStorage.setItem('authToken', response.token); // Lưu token riêng
+                    toast.success(response.message || 'Đăng nhập thành công!');
+                    onClose();
+                    resetForm(); // Xóa dữ liệu trong các ô nhập liệu
+                    // Điều hướng về /home và tải lại trang
+                    navigate('/home');
+                    window.location.reload(); // Tải lại trang để cập nhật giao diện
+                } else {
+                    console.warn('Không nhận được token từ phản hồi');
+                    toast.error('Đăng nhập thất bại. Vui lòng thử lại.');
+                }
             } catch (error) {
-                toast.error(error.error || 'Đăng nhập thất bại. Vui lòng kiểm tra số điện thoại hoặc mật khẩu.'); // Error toast
+                toast.error(error.error || 'Đăng nhập thất bại. Vui lòng kiểm tra số điện thoại hoặc mật khẩu.');
                 setErrors({ phoneNumber: error.error || 'Số điện thoại hoặc mật khẩu không đúng' });
                 console.error('Login error:', error);
             }
             setSubmitting(false);
         },
     });
+
+
 
     return (
         <Dialog
@@ -171,7 +190,8 @@ const LoginRegisterDialog = ({ open, onClose, tabValue, handleTabChange }) => {
                             }}
                         >
                             <Box>
-                                <Typography variant="body2" color="black" sx={{ mb: 1, fontSize: '16px', textAlign: 'center' }}>
+                                <Typography variant="body2" color="black" sx={{ mb: 1, fontSize: '16px', textAlign: 'center' , userSelect: 'none',
+                                    pointerEvents: 'auto'}}>
                                     Đăng nhập bằng QR Code app
                                 </Typography>
                             </Box>
@@ -194,7 +214,8 @@ const LoginRegisterDialog = ({ open, onClose, tabValue, handleTabChange }) => {
                                 />
                             </Box>
                             <Box sx={{ marginTop: '30px' }}>
-                                <Typography variant="body2" color="black" sx={{ mb: '1px', fontSize: '14px', textAlign: 'center' }}>
+                                <Typography variant="body2" color="black" sx={{ mb: '1px', fontSize: '14px', textAlign: 'center', userSelect: 'none',
+                                    pointerEvents: 'auto' }}>
                                     Tải xuống app GOYI
                                 </Typography>
                             </Box>
@@ -241,6 +262,8 @@ const LoginRegisterDialog = ({ open, onClose, tabValue, handleTabChange }) => {
                                         textDecoration: tabValue === 0 ? 'underline' : 'none',
                                         fontSize: '16px',
                                         color: tabValue === 0 ? 'primary.main' : '#333333',
+                                        userSelect: 'none',
+                                        pointerEvents: 'auto'
                                     }}
                                 >
                                     Đăng nhập Goyi
@@ -269,6 +292,8 @@ const LoginRegisterDialog = ({ open, onClose, tabValue, handleTabChange }) => {
                                         textDecoration: tabValue === 1 ? 'underline' : 'none',
                                         fontSize: '16px',
                                         color: tabValue === 1 ? 'primary.main' : '#333333',
+                                        userSelect: 'none',
+                                        pointerEvents: 'auto'
                                     }}
                                 >
                                     Đăng ký Goyi

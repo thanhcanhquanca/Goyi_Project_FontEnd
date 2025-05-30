@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router";
+import {Routes, Route, Navigate} from "react-router";
 import ShowUserLayout from "../layouts/user/home/UserLayout.jsx";
 import ContentIndex from "../components/user/ContentHomeOutlet.jsx";
 import ContentProfileOutlet from "../components/user/ContentProfileOutlet.jsx";
@@ -167,6 +167,9 @@ function RoutesConfig() {
 
     return (
         <Routes>
+            {/* Redirect từ "/" sang "/home" */}
+            <Route path="/" element={<Navigate to="/home" replace />} />
+
             <Route path="/home" element={<ShowUserLayout />}>
                 {/* Route con users */}
                 <Route index element={<UserContentHomeOutlet />} />

@@ -1,51 +1,55 @@
-import React, { useState } from 'react';
-import { Box, Dialog, Grid, Typography, TextField, Button, InputAdornment, IconButton, Snackbar, Alert } from '@mui/material';
+import React, { useState,  } from 'react';
+import { Box, Dialog, Grid, Typography, TextField, Button, InputAdornment, IconButton } from '@mui/material';
 import { MuiTelInput } from 'mui-tel-input';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useFormik } from 'formik';
-import * as Yup from 'yup'; // Import Yup
-import { parsePhoneNumber } from 'libphonenumber-js'; // Import parsePhoneNumber
+import * as Yup from 'yup';
+import { parsePhoneNumber } from 'libphonenumber-js';
 import AuthService from '../../../services/authService.js';
+import { toast } from 'react-toastify';
+import { useNavigate } from "react-router";
 
 // Helper function to normalize phone number by removing country code
 const normalizePhoneNumber = (phone) => {
     try {
         const phoneNumber = parsePhoneNumber(phone || '');
         if (phoneNumber && phoneNumber.isValid()) {
-            // Return the national number without the country code
             return phoneNumber.nationalNumber;
         }
-        return phone; // Return as-is if parsing fails
+        return phone;
     } catch {
-        return phone; // Return as-is if an error occurs
+        return phone;
     }
 };
+
+// Yup validation schema for phone number
+const phoneValidationSchema = Yup.string()
+    .required('Bắt buộc')
+    .test('valid-phone', 'Số điện thoại không hợp lệ', (value) => {
+        try {
+            const phoneNumber = parsePhoneNumber(value || '');
+            return phoneNumber.isValid();
+        } catch {
+            return false;
+        }
+    });
+
+// Custom password validation
+const passwordValidationSchema = Yup.string()
+    .required('Mật khẩu là bắt buộc')
+    .min(6, 'Mật khẩu phải có ít nhất 6 ký tự')
+    .matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/, 'Mật khẩu phải chứa cả chữ và số');
 
 const LoginRegisterDialog = ({ open, onClose, tabValue, handleTabChange }) => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [snackbar, setSnackbar] = useState({
-        open: false,
-        message: '',
-        severity: 'success',
-    });
+    const navigate = useNavigate(); // Khởi tạo useNavigate để điều hướng
+
 
     const handleClickShowPassword = () => setShowPassword(!showPassword);
     const handleClickShowConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
-
-    // Yup validation schema for phone number
-    const phoneValidationSchema = Yup.string()
-        .required('Bắt buộc')
-        .test('valid-phone', 'Số điện thoại không hợp lệ', (value) => {
-            try {
-                const phoneNumber = parsePhoneNumber(value || '');
-                return phoneNumber.isValid();
-            } catch {
-                return false;
-            }
-        });
 
     // Đăng ký
     const registerFormik = useFormik({
@@ -56,33 +60,23 @@ const LoginRegisterDialog = ({ open, onClose, tabValue, handleTabChange }) => {
         },
         validationSchema: Yup.object({
             phone: phoneValidationSchema,
-            password: Yup.string().required('Mật khẩu là bắt buộc'),
+            password: passwordValidationSchema,
             confirmPassword: Yup.string()
                 .required('Xác nhận mật khẩu là bắt buộc')
                 .oneOf([Yup.ref('password'), null], 'Mật khẩu xác nhận không khớp'),
         }),
         onSubmit: async (values, { setSubmitting, setErrors }) => {
             try {
-                // Normalize the phone number (remove country code)
                 const normalizedPhone = normalizePhoneNumber(values.phone);
-
                 const userData = {
-                    phoneNumber: normalizedPhone, // Store only the national number
+                    phoneNumber: normalizedPhone,
                     password: values.password,
                 };
                 const response = await AuthService.register(userData);
-                setSnackbar({
-                    open: true,
-                    message: response.message || 'Đăng ký thành công!',
-                    severity: 'success',
-                });
+                toast.success(response.message || 'Đăng ký thành công!');
                 onClose();
             } catch (error) {
-                setSnackbar({
-                    open: true,
-                    message: error.error || 'Đăng ký thất bại. Vui lòng thử lại.',
-                    severity: 'error',
-                });
+                toast.error(error.error || 'Đăng ký thất bại. Vui lòng thử lại.');
                 setErrors({ phone: error.error || 'Đăng ký thất bại, vui lòng thử lại' });
                 console.error('Register error:', error);
             }
@@ -98,32 +92,37 @@ const LoginRegisterDialog = ({ open, onClose, tabValue, handleTabChange }) => {
         },
         validationSchema: Yup.object({
             phoneNumber: phoneValidationSchema,
-            password: Yup.string().required('Mật khẩu là bắt buộc'),
+            password: passwordValidationSchema,
         }),
-        onSubmit: async (values, { setSubmitting, setErrors }) => {
+        onSubmit: async (values, { setSubmitting, setErrors, resetForm }) => {
             try {
-                // Normalize the phone number (remove country code)
                 const normalizedPhone = normalizePhoneNumber(values.phoneNumber);
-
                 const response = await AuthService.login(normalizedPhone, values.password);
-                setSnackbar({
-                    open: true,
-                    message: response.message || 'Đăng nhập thành công!',
-                    severity: 'success',
-                });
-                onClose();
+
+                // Kiểm tra và lưu toàn bộ thông tin người dùng vào localStorage
+                if (response.token) {
+                    localStorage.setItem('user', JSON.stringify(response)); // Lưu toàn bộ response
+                    localStorage.setItem('authToken', response.token); // Lưu token riêng
+                    toast.success(response.message || 'Đăng nhập thành công!');
+                    onClose();
+                    resetForm(); // Xóa dữ liệu trong các ô nhập liệu
+                    // Điều hướng về /home và tải lại trang
+                    navigate('/home');
+                    window.location.reload(); // Tải lại trang để cập nhật giao diện
+                } else {
+                    console.warn('Không nhận được token từ phản hồi');
+                    toast.error('Đăng nhập thất bại. Vui lòng thử lại.');
+                }
             } catch (error) {
-                setSnackbar({
-                    open: true,
-                    message: error.error || 'Đăng nhập thất bại. Vui lòng kiểm tra số điện thoại hoặc mật khẩu.',
-                    severity: 'error',
-                });
+                toast.error(error.error || 'Đăng nhập thất bại. Vui lòng kiểm tra số điện thoại hoặc mật khẩu.');
                 setErrors({ phoneNumber: error.error || 'Số điện thoại hoặc mật khẩu không đúng' });
                 console.error('Login error:', error);
             }
             setSubmitting(false);
         },
     });
+
+
 
     return (
         <Dialog
@@ -190,7 +189,8 @@ const LoginRegisterDialog = ({ open, onClose, tabValue, handleTabChange }) => {
                             }}
                         >
                             <Box>
-                                <Typography variant="body2" color="black" sx={{ mb: 1, fontSize: '16px', textAlign: 'center' }}>
+                                <Typography variant="body2" color="black" sx={{ mb: 1, fontSize: '16px', textAlign: 'center' , userSelect: 'none',
+                                    pointerEvents: 'auto'}}>
                                     Đăng nhập bằng QR Code app
                                 </Typography>
                             </Box>
@@ -213,7 +213,8 @@ const LoginRegisterDialog = ({ open, onClose, tabValue, handleTabChange }) => {
                                 />
                             </Box>
                             <Box sx={{ marginTop: '30px' }}>
-                                <Typography variant="body2" color="black" sx={{ mb: '1px', fontSize: '14px', textAlign: 'center' }}>
+                                <Typography variant="body2" color="black" sx={{ mb: '1px', fontSize: '14px', textAlign: 'center', userSelect: 'none',
+                                    pointerEvents: 'auto' }}>
                                     Tải xuống app GOYI
                                 </Typography>
                             </Box>
@@ -260,6 +261,8 @@ const LoginRegisterDialog = ({ open, onClose, tabValue, handleTabChange }) => {
                                         textDecoration: tabValue === 0 ? 'underline' : 'none',
                                         fontSize: '16px',
                                         color: tabValue === 0 ? 'primary.main' : '#333333',
+                                        userSelect: 'none',
+                                        pointerEvents: 'auto'
                                     }}
                                 >
                                     Đăng nhập Goyi
@@ -288,6 +291,8 @@ const LoginRegisterDialog = ({ open, onClose, tabValue, handleTabChange }) => {
                                         textDecoration: tabValue === 1 ? 'underline' : 'none',
                                         fontSize: '16px',
                                         color: tabValue === 1 ? 'primary.main' : '#333333',
+                                        userSelect: 'none',
+                                        pointerEvents: 'auto'
                                     }}
                                 >
                                     Đăng ký Goyi
@@ -595,21 +600,6 @@ const LoginRegisterDialog = ({ open, onClose, tabValue, handleTabChange }) => {
                         </Grid>
                     </Grid>
                 </Box>
-
-                <Snackbar
-                    open={snackbar.open}
-                    autoHideDuration={6000}
-                    onClose={() => setSnackbar({ ...snackbar, open: false })}
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                >
-                    <Alert
-                        onClose={() => setSnackbar({ ...snackbar, open: false })}
-                        severity={snackbar.severity}
-                        sx={{ width: '100%' }}
-                    >
-                        {snackbar.message}
-                    </Alert>
-                </Snackbar>
             </Box>
         </Dialog>
     );

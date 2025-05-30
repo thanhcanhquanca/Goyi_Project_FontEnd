@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Paper, IconButton, InputBase, Typography, Badge, MenuItem, Menu, ListItemIcon, Dialog, Tabs, Tab, Box, TextField, Button, Grid, InputAdornment, Link
 } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
-import MenuOpenIcon from '@mui/icons-material/MenuOpen'; // Thêm import
+import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircle from '@mui/icons-material/AccountCircle';
@@ -16,12 +16,36 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
 import { useNavigate } from "react-router";
 import LoginRegisterDialog from './LoginRegisterDialog.jsx';
+import QuizIcon from '@mui/icons-material/Quiz';
 
 function UserHeader({ isSmallScreen, isMediumScreen, handleOpenSearch, toggleSidebar, sidebarOpen }) {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
     const [tabValue, setTabValue] = useState(0);
+    const [profilePicture, setProfilePicture] = useState(null); // State để lưu ảnh hồ sơ
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // State để theo dõi trạng thái đăng nhập
+
+    // Kiểm tra trạng thái đăng nhập và lấy profilePicture từ localStorage
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const token = localStorage.getItem('authToken'); // Giả sử token được lưu với key 'authToken'
+        setIsLoggedIn(!!(user && token)); // Đặt isLoggedIn thành true nếu có user và token
+        if (user && user.profilePicture) {
+            const baseUrl = 'http://localhost:8080/images/';
+            setProfilePicture(baseUrl + user.profilePicture);
+        }
+    }, []); // Chạy một lần khi component mount
+
+    // Xử lý đăng xuất
+    const handleLogout = () => {
+        localStorage.removeItem('user');
+        localStorage.removeItem('authToken');
+        setIsLoggedIn(false);
+        setProfilePicture(null); // Xóa ảnh hồ sơ khi đăng xuất
+        setAnchorEl(null); // Đóng menu
+        navigate('/'); // Chuyển hướng về trang chủ hoặc trang đăng nhập
+    };
 
     const handleCreateClick = () => {
         navigate('/home/user-profile');
@@ -73,7 +97,7 @@ function UserHeader({ isSmallScreen, isMediumScreen, handleOpenSearch, toggleSid
                     <IconButton
                         sx={{
                             mr: 2,
-                            transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)', // Thêm hiệu ứng xoay
+                            transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                             transform: sidebarOpen ? 'rotate(0deg)' : 'rotate(180deg)',
                         }}
                         onClick={toggleSidebar}
@@ -184,7 +208,22 @@ function UserHeader({ isSmallScreen, isMediumScreen, handleOpenSearch, toggleSid
                         color="inherit"
                         onClick={handleAvatarClick}
                     >
-                        <AccountCircle sx={{ height: 30, width: 30 }} />
+                        {profilePicture ? (
+                            <img
+                                src={profilePicture}
+                                alt="Profile"
+                                style={{
+                                    height: 40,
+                                    width: 40,
+                                    borderRadius: '50%',
+                                    objectFit: 'cover',
+                                    display: 'block',
+                                    border: '2px solid #DDDDDD'
+                                }}
+                            />
+                        ) : (
+                            <AccountCircle sx={{ height: 40, width: 40 }} />
+                        )}
                     </IconButton>
                 </Box>
 
@@ -195,12 +234,6 @@ function UserHeader({ isSmallScreen, isMediumScreen, handleOpenSearch, toggleSid
                     anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                     transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                 >
-                    <MenuItem onClick={handleOpenDialog}>
-                        <ListItemIcon>
-                            <LoginIcon fontSize="small" />
-                        </ListItemIcon>
-                        Tài Khoản
-                    </MenuItem>
                     <MenuItem>
                         <ListItemIcon>
                             <SettingsIcon fontSize="small" />
@@ -209,10 +242,26 @@ function UserHeader({ isSmallScreen, isMediumScreen, handleOpenSearch, toggleSid
                     </MenuItem>
                     <MenuItem>
                         <ListItemIcon>
-                            <LogoutIcon fontSize="small" />
+                            <QuizIcon fontSize="small" />
                         </ListItemIcon>
-                        Đăng Xuất
+                        Giới thiệu
                     </MenuItem>
+                    {!isLoggedIn && (
+                        <MenuItem onClick={handleOpenDialog}>
+                            <ListItemIcon>
+                                <LoginIcon fontSize="small" />
+                            </ListItemIcon>
+                            Tài Khoản
+                        </MenuItem>
+                    )}
+                    {isLoggedIn && (
+                        <MenuItem onClick={handleLogout}>
+                            <ListItemIcon>
+                                <LogoutIcon fontSize="small" />
+                            </ListItemIcon>
+                            Đăng xuất
+                        </MenuItem>
+                    )}
                 </Menu>
 
                 <LoginRegisterDialog
